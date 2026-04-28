@@ -1,0 +1,59 @@
+[debug] [2026-04-28T10:36:46.741Z] ----------------------------------------------------------------------
+[debug] [2026-04-28T10:36:46.746Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-04-28T10:36:46.746Z] CLI Version:   15.15.0
+[debug] [2026-04-28T10:36:46.746Z] Platform:      win32
+[debug] [2026-04-28T10:36:46.746Z] Node Version:  v25.9.0
+[debug] [2026-04-28T10:36:46.746Z] Time:          Tue Apr 28 2026 17:36:46 GMT+0700 (Western Indonesia Time)
+[debug] [2026-04-28T10:36:46.747Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\xampp\htdocs\kwu16
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-04-28T10:37:05.169Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-28T10:37:05.169Z] > authorizing via signed-in user (neifadzakiyah@gmail.com)
+[debug] [2026-04-28T10:37:21.074Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:21.074Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:21.079Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-04-28T10:37:21.080Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"kwu16-neifa-web"}
+[debug] [2026-04-28T10:37:22.336Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-04-28T10:37:22.336Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"kwu16-neifa-web"}
+[debug] [2026-04-28T10:37:54.354Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:54.354Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:54.355Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-04-28T10:37:54.356Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"kwu16-neifa-web","name":"kwu16-neifa-web"}
+[debug] [2026-04-28T10:37:54.839Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-04-28T10:37:54.840Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.5057798436148827969"}
+[debug] [2026-04-28T10:37:54.843Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:54.843Z] Checked if tokens are valid: true, expires at: 1777376024619
+[debug] [2026-04-28T10:37:54.844Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5057798436148827969 [none]
+[debug] [2026-04-28T10:37:55.995Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5057798436148827969 200
+[debug] [2026-04-28T10:37:55.995Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5057798436148827969 {"name":"operations/create_project.global.5057798436148827969","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","ready":true},"done":true,"error":{"code":9,"message":"Callers must accept Terms of Service","details":[{"@type":"type.googleapis.com/google.rpc.PreconditionFailure","violations":[{"type":"TOS","subject":"cloud","description":"Callers must accept Terms of Service"}]}]}}
+[debug] [2026-04-28T10:37:56.273Z] FirebaseError: Callers must accept Terms of Service
+    at OperationPoller.poll (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\operation-poller.js:25:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async createCloudProject (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:237:29)
+    at async createFirebaseProjectAndLog (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:102:9)
+    at async Object.doSetup (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\project.js:64:24)
+    at async init (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\index.js:98:13)
+    at async Command.initAction [as actionFn] (C:\Users\LENOVO\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\init.js:232:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
