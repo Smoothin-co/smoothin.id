@@ -708,7 +708,7 @@
     .chat-footer { padding: 15px 20px; background: white; display: flex; gap: 12px; align-items: center; border-top: 1px solid #f1f5f9; }
     .chat-input { flex: 1; border: none; background: #f8fafc; padding: 12px 18px; border-radius: 25px; font-size: 0.9rem; font-family: inherit; transition: all 0.3s; border: 1.5px solid transparent; }
     .chat-input:focus { outline: none; background: white; border-color: var(--accent-color); box-shadow: 0 5px 15px rgba(50, 130, 184, 0.1); }
-    .chat-send { background: var(--primary-color); color: white; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(31, 64, 104, 0.2); }
+    .chat-send { background: var(--primary-color); color: white; border: none; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(31, 64, 104, 0.2); flex-shrink: 0; }
     .chat-send:hover { transform: scale(1.1) rotate(10deg); background: var(--accent-color); }
 
     /* Loyalty & Points */
@@ -1759,6 +1759,48 @@
       </div>
     </div>
 
+    <!-- EDIT MENU MODAL -->
+    <div id="editMenuModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('editMenuModal')">&times;</span>
+        <h2 style="color:var(--primary-color); margin-bottom:20px;">Edit Produk</h2>
+        <div class="form-group">
+          <label>Nama Produk</label>
+          <input type="text" id="edit-menu-name" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Kategori</label>
+          <select id="edit-menu-category" class="form-input">
+            <option value="KAMU LAGI DIET?">Diet</option>
+            <option value="BOOST YOUR ENERGY!">Energy</option>
+            <option value="AYO JAGA IMUN">Imun</option>
+            <option value="JAGA PENCERNAAN">Pencernaan</option>
+            <option value="SUPPORT YOUR BLOOD">Darah</option>
+            <option value="LEMAH & LETIH? SAATNYA SMOOTHIE">Recovery</option>
+          </select>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label>Harga Reg (Rp)</label>
+            <input type="number" id="edit-menu-price-reg" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Harga Med (Rp)</label>
+            <input type="number" id="edit-menu-price-med" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Benefit / Slogan</label>
+          <input type="text" id="edit-menu-benefit" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>URL Gambar (Optional)</label>
+          <input type="text" id="edit-menu-img" class="form-input" placeholder="fotoygbnr/nama-file.png">
+        </div>
+        <button class="btn" onclick="saveMenuEdit()">Simpan Perubahan</button>
+      </div>
+    </div>
+
     <!-- QR SCANNER MODAL -->
     <div id="scannerModal">
       <div class="scanner-modal-content">
@@ -1946,6 +1988,47 @@
         const regBox = document.getElementById('register-form-box');
         if (loginBox) loginBox.style.display = mode === 'login' ? 'block' : 'none';
         if (regBox) regBox.style.display = mode === 'register' ? 'block' : 'none';
+      }
+
+      let editingMenuIndex = -1;
+
+      function quickEditMenu(name) {
+        const idx = menuDatabase.findIndex(m => m.name === name);
+        if (idx === -1) return;
+        
+        editingMenuIndex = idx;
+        const m = menuDatabase[idx];
+        
+        document.getElementById('edit-menu-name').value = m.name;
+        document.getElementById('edit-menu-category').value = m.category;
+        document.getElementById('edit-menu-price-reg').value = m.priceRegular;
+        document.getElementById('edit-menu-price-med').value = m.priceMedium;
+        document.getElementById('edit-menu-benefit').value = m.benefit || "";
+        document.getElementById('edit-menu-img').value = m.customImg || "";
+        
+        showModal('editMenuModal');
+      }
+
+      function saveMenuEdit() {
+        if (editingMenuIndex === -1) return;
+        
+        const m = menuDatabase[editingMenuIndex];
+        m.name = document.getElementById('edit-menu-name').value;
+        m.category = document.getElementById('edit-menu-category').value;
+        m.priceRegular = parseInt(document.getElementById('edit-menu-price-reg').value) || 0;
+        m.priceMedium = parseInt(document.getElementById('edit-menu-price-med').value) || 0;
+        m.benefit = document.getElementById('edit-menu-benefit').value;
+        m.customImg = document.getElementById('edit-menu-img').value;
+        
+        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
+        showToast('Produk berhasil diperbarui!');
+        closeModal('editMenuModal');
+        renderMenu();
+        
+        // Also refresh admin menu tab if active
+        if (localStorage.getItem('smoothinAdminTab') === 'menu') {
+          renderAdminMenu();
+        }
       }
 
       function openModal(name) {
