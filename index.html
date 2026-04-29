@@ -3775,6 +3775,24 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
+        // Data Migration/Recovery: Restore missing descriptions from defaults
+        const currentMenu = JSON.parse(localStorage.getItem('smoothinMenu'));
+        if (currentMenu && Array.isArray(currentMenu)) {
+          let updated = false;
+          currentMenu.forEach(item => {
+            const def = defaultMenu.find(d => d.name === item.name);
+            if (def) {
+              if (!item.desc && def.desc) { item.desc = def.desc; updated = true; }
+              if (!item.composition && def.composition) { item.composition = def.composition; updated = true; }
+              if (!item.benefit && def.benefit) { item.benefit = def.benefit; updated = true; }
+            }
+          });
+          if (updated) {
+            localStorage.setItem('smoothinMenu', JSON.stringify(currentMenu));
+            menuDatabase = currentMenu;
+          }
+        }
+
         renderMenu();
         updateAccountView();
         renderTestimonials();
@@ -3787,6 +3805,10 @@
         // Sync across tabs if admin completes order in another window
         window.addEventListener('storage', (e) => {
           if (e.key === 'smoothinOrders') renderOrderTracker();
+          if (e.key === 'smoothinMenu') {
+            menuDatabase = JSON.parse(localStorage.getItem('smoothinMenu')) || defaultMenu;
+            renderMenu();
+          }
         });
       });
     </script>
