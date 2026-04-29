@@ -2012,6 +2012,7 @@
         shopeefood: "https://shopee.co.id/universal-links/m/shopeefood" // Link umum ShopeeFood
       };
 
+      const APP_VERSION = '1.6.0'; // Updated version to trigger data refresh
       const defaultMenu = [
         { name: "Berry Yogurt Lite", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "130 kcal", kcalMed: "180 kcal", desc: "Low-calorie blend with fresh strawberries & yogurt.", composition: "Strawberry, Yogurt, Honey", benefit: "Diet & Digestion", customImg: "fotoygbnr/berryyogurthlite.png", rating: "4.8" },
         { name: "Apple Oat Fit", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "180 kcal", kcalMed: "240 kcal", desc: "Fiber-rich apple & oat fusion.", composition: "Apple, Oat, Milk", benefit: "Stay Full Longer", customImg: "fotoygbnr/appleoatfit.png", rating: "4.7" },
@@ -3775,7 +3776,18 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Data Migration/Recovery: Restore missing descriptions from defaults
+        // Version Check & Migration
+        const savedVersion = localStorage.getItem('smoothinAppVersion');
+        if (savedVersion !== APP_VERSION) {
+          console.log('New version detected! Refreshing menu data...');
+          localStorage.removeItem('smoothinMenu'); // Clear old corrupted menu
+          localStorage.setItem('smoothinAppVersion', APP_VERSION);
+          // Re-initialize menuDatabase to default
+          menuDatabase = defaultMenu;
+          localStorage.setItem('smoothinMenu', JSON.stringify(defaultMenu));
+        }
+
+        // Data Migration/Recovery: Restore missing descriptions from defaults (Secondary check)
         const currentMenu = JSON.parse(localStorage.getItem('smoothinMenu'));
         if (currentMenu && Array.isArray(currentMenu)) {
           let updated = false;
