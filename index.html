@@ -482,16 +482,52 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-    @media (max-width: 600px) {
-      .modal { align-items: flex-end; padding: 0; }
-      .modal-content { 
-        max-width: 100%; 
-        border-radius: 30px 30px 0 0; 
-        animation: slideUpBottom 0.4s cubic-bezier(0, 0, 0.2, 1); 
-        padding-bottom: 50px;
-        margin: 0;
       }
     }
+
+    /* Order Detail Modal Content */
+    .order-detail-modal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .detail-row label {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-row span {
+      color: var(--primary-color);
+      font-weight: 700;
+      text-align: right;
+    }
+    .detail-items-list {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 18px;
+      margin: 5px 0;
+      border: 1px solid #f1f5f9;
+    }
+    .detail-item-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+    .detail-item-row:last-child { margin-bottom: 0; }
+    .detail-item-row span { color: #1e293b; font-weight: 500; text-align: left; }
+    .detail-item-row strong { color: var(--primary-color); }
 
     @keyframes slideUpBottom {
       from { transform: translateY(100%); }
@@ -2007,11 +2043,18 @@
           return;
         }
         
+        const queueNum = 'C' + Math.floor(Math.random() * 900 + 100);
+        const orderTotal = cart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 1)), 0);
+        const orderId = 'ORD' + Date.now();
+
         const newOrder = {
-          id: 'ORD' + Date.now(),
-          user: currentUser.username,
+          id: orderId,
+          queueNum: queueNum,
+          customer: currentUser.user,
+          name: cart.map(i => i.name).join(', '),
           items: [...cart],
-          total: cart.reduce((s, i) => s + ((i.price || 0) * (i.qty || 1)), 0),
+          price: orderTotal,
+          total: orderTotal,
           status: 'Menunggu',
           time: new Date().toISOString(),
           payment: 'Tunai'
@@ -2021,12 +2064,23 @@
         ordersList.push(newOrder);
         localStorage.setItem('smoothinOrders', JSON.stringify(ordersList));
         
+        // Show QR for Cart Checkout too
+        document.getElementById('queueNumber').innerText = queueNum;
+        const summaryEl = document.getElementById('qr-order-summary');
+        if (summaryEl) summaryEl.innerText = newOrder.name;
+        
+        const qrData = `ORDER|${orderId}|${newOrder.name}`;
+        document.getElementById('qrDisplay').innerHTML = `
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}" 
+               style="width:160px; height:160px; border: 4px solid white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        `;
+        
         cart = [];
         localStorage.setItem('smoothinCart', JSON.stringify(cart));
         updateCartBadge();
         
+        showModal('qrModal');
         showToast('Pesanan berhasil! Silakan ke kasir.', 'success');
-        showPage('account');
       }
 
       function showToast(message, type = 'success') {
@@ -2255,31 +2309,10 @@
             return;
           }
 
-          // Cash Path or QRIS Verified Path: Show Queue QR
-          document.getElementById('queueNumber').innerText = queueNum;
-          
-          const details = isCustom ? 
-            `Custom: ${selectedFruits.join(' + ')} (${selectedBase})` : 
-            currentItem.name;
-          
-          const summaryEl = document.getElementById('qr-order-summary');
-          if (summaryEl) summaryEl.innerText = details;
-          
-          const qrData = `ORDER|${queueNum}|${details}`;
-          document.getElementById('qrDisplay').innerHTML = `
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}" 
-                 style="width:160px; height:160px; border: 4px solid white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-          `;
-          
-          showModal('qrModal');
-          showToast(isVerified ? 'Pembayaran QRIS Berhasil!' : 'Pemesanan Berhasil! Silahkan ke kasir.');
-          
-          // Save to Orders List for Reports & Admin Dashboard
-          const qty = isCustom ? (parseInt(document.getElementById('customQtyInput').value) || 1) : (parseInt(document.getElementById('qtyInput').value) || 1);
-          const unitPrice = isCustom ? (document.querySelector('input[name="customSize"]:checked')?.value === 'medium' ? 25000 : 18000) : getPrice();
-          
+          const orderId = 'ORD' + Date.now();
           const newOrder = {
-            id: Date.now(),
+            id: orderId,
+            queueNum: queueNum,
             customer: currentUser ? currentUser.user : 'Guest',
             name: details,
             price: unitPrice * qty,
@@ -2288,6 +2321,21 @@
             status: 'Pending',
             payment: paymentMethod
           };
+          
+          // Show Queue QR
+          document.getElementById('queueNumber').innerText = queueNum;
+          const summaryEl = document.getElementById('qr-order-summary');
+          if (summaryEl) summaryEl.innerText = details;
+          
+          const qrData = `ORDER|${orderId}|${details}`;
+          document.getElementById('qrDisplay').innerHTML = `
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}" 
+                 style="width:160px; height:160px; border: 4px solid white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+          `;
+          
+          showModal('qrModal');
+          showToast(isVerified ? 'Pembayaran QRIS Berhasil!' : 'Pemesanan Berhasil! Silahkan ke kasir.');
+
           const ordersList = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
           ordersList.push(newOrder);
           localStorage.setItem('smoothinOrders', JSON.stringify(ordersList));
@@ -3046,22 +3094,87 @@
       }
 
       function renderOrderHTML(o) {
-        const orderPrice = typeof o.price === 'number' ? o.price : 0;
+        const orderPrice = o.price || o.total || 0;
+        const customerName = o.customer || o.user || 'Guest';
+        let itemName = o.name || 'Unknown Item';
+        
+        if (itemName === 'Unknown Item' && o.items && Array.isArray(o.items)) {
+          itemName = o.items.map(i => i.name).join(', ');
+        }
+
+        const actionFn = o.status === 'Selesai' ? `showOrderDetails('${o.id}')` : `completeOrder('${o.id}')`;
+
         return `
           <div class="order-item" style="padding:12px; border:1px solid #f1f5f9; border-radius:12px;">
             <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:5px;">
               <div>
-                <div style="font-size:0.6rem; color:#94a3b8; font-weight:700;">${o.customer || 'Guest'}</div>
-                <div style="font-weight:700; font-size:0.85rem; color:var(--primary-color);">${o.name || 'Unknown Item'}</div>
+                <div style="font-size:0.6rem; color:#94a3b8; font-weight:700;">${customerName}</div>
+                <div style="font-weight:700; font-size:0.85rem; color:var(--primary-color);">${itemName}</div>
               </div>
               <span class="status-badge ${o.status === 'Selesai' ? 'status-delivered' : 'status-accepted'}" style="font-size:0.55rem; padding:2px 6px;">${o.status || 'Pending'}</span>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
               <span style="font-size:0.75rem; color:#64748b;">Rp${orderPrice.toLocaleString()}</span>
-              <button class="buy-btn-sm" style="margin:0; width:auto; font-size:0.65rem; padding:4px 10px;" onclick="completeOrder('${o.id}')">${o.status === 'Selesai' ? 'Detail' : 'Selesaikan'}</button>
+              <button class="buy-btn-sm" style="margin:0; width:auto; font-size:0.65rem; padding:4px 10px;" onclick="${actionFn}">${o.status === 'Selesai' ? 'Detail' : 'Selesaikan'}</button>
             </div>
           </div>
         `;
+      }
+
+      function showOrderDetails(orderId) {
+        const orders = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
+        const order = orders.find(o => o.id == orderId);
+        if (!order) return;
+
+        const container = document.getElementById('order-detail-content');
+        if (!container) return;
+
+        let itemsHtml = '';
+        if (order.items && Array.isArray(order.items)) {
+          itemsHtml = `
+            <div class="detail-items-list">
+              <div style="font-weight:800; font-size:0.7rem; color:#94a3b8; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">Rincian Produk</div>
+              ${order.items.map(i => `
+                <div class="detail-item-row">
+                  <span>${i.name} (x${i.qty})</span>
+                  <strong>Rp${((i.unitPrice || (i.price/i.qty) || 0) * (i.qty || 1)).toLocaleString()}</strong>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="detail-row">
+            <label>ID Pesanan</label>
+            <span>#${order.id}</span>
+          </div>
+          <div class="detail-row">
+            <label>Pelanggan</label>
+            <span>${order.customer || order.user || 'Guest'}</span>
+          </div>
+          <div class="detail-row">
+            <label>Waktu</label>
+            <span>${new Date(order.time).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+          </div>
+          <div class="detail-row">
+            <label>Pembayaran</label>
+            <span style="text-transform:uppercase;">${order.payment || 'Tunai'}</span>
+          </div>
+          <div class="detail-row">
+            <label>Status</label>
+            <span class="status-badge ${order.status === 'Selesai' ? 'status-delivered' : 'status-accepted'}">${order.status || 'Pending'}</span>
+          </div>
+          
+          ${itemsHtml}
+          
+          <div class="detail-row" style="margin-top:10px; border:none; padding-top:10px;">
+            <label style="font-size:0.9rem; color:var(--text-color); text-transform:none;">Total Bayar</label>
+            <span style="font-size:1.3rem; color:var(--accent-color); font-weight:800;">Rp${(order.price || order.total || 0).toLocaleString()}</span>
+          </div>
+        `;
+
+        showModal('orderDetailModal');
       }
 
       function clearAllOrders() {
@@ -3089,7 +3202,51 @@
       function closeQrModal() { closeModal('qrModal'); }
       function closePromoModal() { closeModal('promoModal'); }
       function closeScannerModal() { closeModal('scannerModal'); }
-      function openAdminScanner() { showModal('scannerModal'); }
+      function openAdminScanner() { 
+        showModal('scannerModal'); 
+        startAdminScanner();
+      }
+
+      function startAdminScanner() {
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+          html5QrCode.stop().then(() => {
+            closeModal('scannerModal');
+            processAdminScan(decodedText);
+          });
+        };
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+          .catch(err => {
+            console.error(err);
+            showToast('Gagal membuka kamera.', 'error');
+            closeModal('scannerModal');
+          });
+      }
+
+      function processAdminScan(text) {
+        if (text.startsWith('ORDER|')) {
+          const parts = text.split('|');
+          const orderId = parts[1];
+          const orders = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
+          const order = orders.find(o => o.id == orderId || o.queueNum == orderId);
+          
+          if (order) {
+            if (order.status === 'Selesai') {
+              showToast('Pesanan ini sudah selesai.');
+              showOrderDetails(order.id);
+            } else {
+              if (confirm(`Selesaikan pesanan #${order.queueNum} (${order.customer})?`)) {
+                completeOrder(order.id);
+              }
+            }
+          } else {
+            showToast('Pesanan tidak ditemukan.', 'error');
+          }
+        } else {
+          showToast('QR Code tidak dikenali.', 'error');
+        }
+      }
       function toggleChatMode() {}
       let chatHistory = JSON.parse(localStorage.getItem('smoothinChats')) || [];
 
