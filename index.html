@@ -482,9 +482,6 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 
-      }
-    }
-
     /* Order Detail Modal Content */
     .order-detail-modal-content {
       display: flex;
@@ -699,44 +696,119 @@
 
     /* Chat System */
     .chat-widget-container { 
-      position: absolute; 
-      bottom: 115px; 
-      right: 20px; 
-      z-index: 3000; 
-      pointer-events: none; /* Lapisan luar tidak menghalangi klik */
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 0;
+      z-index: 5000; 
+      pointer-events: none;
     }
-    .chat-btn { 
-      width: 55px; 
-      height: 55px; 
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      color: white; 
-      font-size: 24px; 
-      cursor: pointer; 
-      box-shadow: 0 10px 25px rgba(15, 76, 117, 0.3); 
-      transition: all 0.3s;
-      animation: aiPulse 2s infinite;
-      pointer-events: auto; /* Tombol tetap bisa diklik */
+    .chat-btn-header { 
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: relative;
     }
+    .chat-btn-header:active { transform: scale(0.9); }
+    
     .chat-window { 
-      position: absolute; 
-      bottom: 70px; 
-      right: 0; 
-      width: 300px; 
-      height: 450px; 
-      background: white; 
-      border-radius: 25px; 
-      box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+      pointer-events: auto;
+      position: fixed; 
+      bottom: 20px; 
+      right: 20px; 
+      width: 320px; 
+      height: 500px; 
+      background: rgba(255, 255, 255, 0.98); 
+      backdrop-filter: blur(15px);
+      border-radius: 28px; 
+      box-shadow: 0 25px 60px rgba(0,0,0,0.2); 
       display: none; 
       flex-direction: column; 
       overflow: hidden; 
-      animation: chatOpenAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-      z-index: 3001; 
-      border: 1px solid #f1f5f9; 
-      pointer-events: auto; /* Jendela chat tetap bisa diklik */
+      animation: chatOpenAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+      z-index: 5001; 
+      border: 1px solid rgba(255, 255, 255, 0.5); 
+    }
+    .chat-btn:hover { transform: translateY(-5px); }
+    
+    /* Order Tracker Styles */
+    .order-tracker-bar {
+      margin: 10px 20px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 100;
+    }
+    
+    .tracker-pulse {
+      width: 10px;
+      height: 10px;
+      background: #f59e0b;
+      border-radius: 50%;
+    }
+    
+    .tracker-text {
+      flex: 1;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1f6392;
+    }
+    
+    .tracker-sub {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    
+
+    
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      padding: 15px 20px;
+      color: white;
+      border-bottom: none;
+    }
+    
+    .chat-body {
+      padding: 15px;
+      flex: 1;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    
+    .chat-bubble.bot {
+      background: white;
+      color: #334155;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .chat-bubble.user {
+      background: var(--primary-color);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
     }
     @keyframes chatOpenAnim { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
     
@@ -923,12 +995,6 @@
       box-shadow: 0 20px 40px rgba(15, 76, 117, 0.1); 
       border: 1px solid #f0f7fe; 
       display: none; /* Hidden by default, shown via JS */
-      animation: slideInTracking 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-    
-    @keyframes slideInTracking {
-      from { transform: translateY(30px) scale(0.9); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
     }
 
     .tracking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1.5px dashed #f1f5f9; padding-bottom: 12px; }
@@ -1087,6 +1153,13 @@
             <span id="cart-count-badge-modern"
               style="position:absolute; top:-4px; right:-6px; background:var(--danger-color); color:white; font-size:0.55rem; padding:2px 5px; border-radius:10px; display:none; min-width:14px; text-align:center;">0</span>
           </div>
+          <!-- AI ICON ADDED NEAR CART -->
+          <div class="header-btn chat-btn-header" onclick="toggleChatWindow()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; background:#4ade80; border-radius:50%; border:2px solid white;"></span>
+          </div>
           <div class="header-btn nav-item" id="nav-account" onclick="showPage('account')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -1095,7 +1168,7 @@
           </div>
         </div>
       </div>
-
+      <div id="order-tracker-container" style="display:none;"></div>
       <div class="nav">
         <a class="nav-item" id="nav-shop" href="javascript:void(0)" onclick="showPage('shop')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1103,14 +1176,14 @@
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
-          <span>Menu</span>
+          <span>Shop</span>
         </a>
         <a class="nav-item" id="nav-discount" href="javascript:void(0)" onclick="showPage('discount')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
             <line x1="1" y1="10" x2="23" y2="10"></line>
           </svg>
-          <span>Promo</span>
+          <span>Deals</span>
         </a>
 
         <!-- Center Home Tab -->
@@ -1121,7 +1194,7 @@
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
           </div>
-          <span>Beranda</span>
+          <span>Home</span>
         </a>
 
         <a class="nav-item" id="nav-custom" href="javascript:void(0)" onclick="showPage('custom')">
@@ -1142,41 +1215,14 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
-          <span>Ulasan</span>
+          <span>Reviews</span>
         </a>
       </div>
 
       <div class="content-area">
 
 
-      <!-- ACTIVE ORDER TRACKING WIDGET -->
-      <div id="active-order-tracking" class="active-order-widget">
-        <div class="tracking-header">
-          <h5 id="tracking-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            Pesanan Aktif
-          </h5>
-          <span id="tracking-status-badge" class="tracking-status status-waiting">Menunggu Konfirmasi</span>
-        </div>
-        <div class="tracking-body">
-          <div class="tracking-info">
-            <div id="tracking-items" style="font-size: 0.85rem; color: #1e3a8a; font-weight: 700; margin-bottom: 8px;">
-              Sedang memuat detail...
-            </div>
-            <div id="cancel-timer-container" style="display: none;">
-              <div class="cancel-window-timer" id="cancel-window-text">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Bisa batal dalam: 03:00
-              </div>
-              <button class="btn-cancel-active" id="btn-cancel-now">Batalkan Pesanan</button>
-            </div>
-          </div>
-          <div class="tracking-timer" id="prep-timer-box">
-            <span class="time" id="tracking-prep-time">--</span>
-            <span class="label">Menit Lagi</span>
-          </div>
-        </div>
-      </div>
+
 
       <!-- HOME -->
       <div id="home" class="section active">
@@ -1288,21 +1334,19 @@
         </div>
 
         <div class="about-desc">
-          <p>Didirikan dengan semangat untuk menghadirkan pilihan minuman yang lebih sehat, Smoothin’ lahir dari
-            keresahan sederhana, sejauh mata memandang masih banyak orang yang menikmati minuman tanpa benar-benar
-            memahami kandungan gizinya. Di tengah tren minuman era sekarang yang berfokus pada rasa, kami ingin
-            menghadirkan sesuatu yang berbeda.</p>
-          <p>Smoothin’ bukan hanya tentang rasa, tapi tentang keseimbangan antara kenikmatan dan kebutuhan tubuh. Kami
-            percaya bahwa hidup sehat tidak harus rumit. Melalui kombinasi buah-buahan alami yang dipilih dengan baik,
-            kami menghadirkan smoothie yang tidak hanya nikmat diteguk, tetapi juga memiliki manfaat nyata bagi tubuh.
-          </p>
-          <p style="font-style: italic; color: #2c7ab1;">Setiap tegukan Smoothin’ adalah bentuk kontribusi kecil untuk
-            tubuh yang lebih sehat, lingkungan yang lebih lestari, dan petani lokal yang lebih sejahtera. Karena kami
-            percaya, perubahan besar dimulai dari langkah kecil yang konsisten.</p>
+          <p>Founded with a passion for bringing healthier beverage options to life, Smoothin’ was born from a simple 
+            observation: in a world full of drinks, very few truly understand what they nourish their bodies with. 
+            While modern trends often focus solely on taste, we decided to bring something more meaningful to the table.</p>
+          <p>Smoothin’ is about more than just flavor; it's about the harmony between indulgence and wellness. We believe 
+            that healthy living shouldn't be complicated. By carefully selecting natural fruits and ingredients, we 
+            craft smoothies that are as delightful to sip as they are beneficial to your body.</p>
+          <p style="font-style: italic; color: #2c7ab1;">Every sip of Smoothin’ is a small contribution towards a 
+            healthier you, a more sustainable environment, and the prosperity of our local farmers. Because we believe 
+            great change begins with consistent, small steps.</p>
         </div>
 
-        <p style="margin-top: 30px; font-weight: 500; color: #1f6392;">Dan dari perjalanan itu, kami menemukan tiga hal
-          yang paling penting. Inilah yang selalu kami jaga dalam setiap resep Smoothin’:</p>
+        <p style="margin-top: 30px; font-weight: 500; color: #1f6392;">Through our journey, we discovered three core 
+          pillars that we uphold in every Smoothin’ recipe:</p>
 
         <div class="esensi-grid">
           <div class="esensi-card">
@@ -1333,8 +1377,8 @@
       <div id="shop" class="section">
         <div class="section-title">
           <img src="fotoygbnr/logo1.png" alt="Logo">
-          <h1>Menu Smoothie</h1>
-          <p>Pilih kategori yang sesuai dengan kebutuhanmu hari ini.</p>
+          <h1>Smoothie Menu</h1>
+          <p>Choose the perfect blend for your mood today.</p>
         </div>
 
         <div class="shop-header">
@@ -1343,13 +1387,13 @@
             <input type="text" class="search-input" id="menu-search" placeholder="Cari smoothie (misal: Oat, Berry...)" oninput="renderMenu()">
           </div>
           <div class="filter-scroll" id="filterPills">
-            <div class="filter-pill active" onclick="filterMenu('ALL', this)">Semua</div>
-            <div class="filter-pill" onclick="filterMenu('KAMU LAGI DIET?', this)">Diet</div>
-            <div class="filter-pill" onclick="filterMenu('BOOST YOUR ENERGY!', this)">Energy</div>
-            <div class="filter-pill" onclick="filterMenu('AYO JAGA IMUN', this)">Imun</div>
-            <div class="filter-pill" onclick="filterMenu('JAGA PENCERNAAN', this)">Pencernaan</div>
-            <div class="filter-pill" onclick="filterMenu('SUPPORT YOUR BLOOD', this)">Darah</div>
-            <div class="filter-pill" onclick="filterMenu('LEMAH & LETIH? SAATNYA SMOOTHIE', this)">Recovery</div>
+            <div class="filter-pill active" onclick="filterMenu('ALL', this)">All</div>
+            <div class="filter-pill" onclick="filterMenu('BODY GOALS', this)">Body Goals</div>
+            <div class="filter-pill" onclick="filterMenu('ENERGY BOOST', this)">Energy</div>
+            <div class="filter-pill" onclick="filterMenu('IMMUNE SHIELD', this)">Immunity</div>
+            <div class="filter-pill" onclick="filterMenu('DIGESTIVE BLISS', this)">Digestion</div>
+            <div class="filter-pill" onclick="filterMenu('BLOOD HEALTH', this)">Vitality</div>
+            <div class="filter-pill" onclick="filterMenu('RECOVERY MODE', this)">Recovery</div>
           </div>
         </div>
 
@@ -1366,18 +1410,17 @@
               <img src="logo1.png" alt="Logo">
               <div class="custom-title" style="margin-bottom: 0;">Custom Smoothie</div>
             </div>
-            <div class="custom-sub">Buat smoothie sesuai keinginanmu. Pilih maksimal 3 buah, tambah 1 add on gratis.
-            </div>
+            <div class="custom-sub">Create your own signature blend. Pick up to 3 fruits, plus 1 free add-on.</div>
 
             <div class="custom-group">
-              <label>Pilih Buah (max 3):</label>
+              <label>Select Fruits (max 3):</label>
               <div class="product-grid" id="customFruits" style="grid-template-columns: repeat(3, 1fr); gap: 10px;">
                 <!-- Dynamically rendered -->
               </div>
             </div>
 
             <div class="custom-group">
-              <label>Add On (pilih 1 gratis):</label>
+              <label>Add Ons (pick 1 free):</label>
               <div class="fruit-checkbox-group" id="customAddon">
                 <label><input type="checkbox" value="Buah Potong"> Buah Potong</label>
                 <label><input type="checkbox" value="Oat"> Oat</label>
@@ -1386,15 +1429,15 @@
             </div>
 
             <div class="custom-group">
-              <label>Ukuran:</label>
+              <label>Size:</label>
               <div class="size-radio-group" id="customSize">
-                <label><input type="radio" name="customSize" value="regular" checked onclick="updateCustomPrice()"> Regular (350ml) - Rp18.000</label>
-                <label><input type="radio" name="customSize" value="medium" onclick="updateCustomPrice()"> Medium (500ml) - Rp25.000</label>
+                <label><input type="radio" name="customSize" value="regular" checked onclick="updateCustomPrice()"> Regular (350ml) - Rp18,000</label>
+                <label><input type="radio" name="customSize" value="medium" onclick="updateCustomPrice()"> Medium (500ml) - Rp25,000</label>
               </div>
             </div>
 
             <div class="custom-group">
-              <label>Jumlah :</label>
+              <label>Quantity:</label>
               <input type="number" id="customQtyInput" value="1" min="1" max="50"
                 style="padding:10px; border-radius:15px; border:1px solid #b9d4ef; width:80px; text-align:center; font-family:inherit; font-size:1rem;"
                 onchange="updateCustomPrice()">
@@ -1412,7 +1455,7 @@
 
             <div class="delivery-options" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
               <button class="btn" style="margin:0;" onclick="handleDirectOrder(true)">Beli & Bayar Sekarang</button>
-              <button class="delivery-btn" style="background:#f0f7fe; color:var(--primary-color); border:1.5px solid var(--secondary-color);" onclick="addToCart(true)">Tambah ke Keranjang</button>
+              <button class="delivery-btn" style="background:#f0f7fe; color:var(--primary-color); border:1.5px solid var(--secondary-color);" onclick="addToCart(true)">Add to Bag</button>
             </div>
           </div>
         </div>
@@ -1507,15 +1550,15 @@
       <div id="cart" class="section">
         <div class="section-title">
           <img src="logo1.png" alt="Logo">
-          <h1>Keranjang Belanja</h1>
+          <h1>My Shopping Bag</h1>
         </div>
         <div id="cart-container">
           <!-- Cart items will be rendered here -->
           <div class="card" style="text-align:center; padding:40px;">
             <div style="font-size:3rem; margin-bottom:15px;"></div>
-            <h3>Keranjang Kosong</h3>
-            <p>Yuk, pilih menu sehat favoritmu sekarang!</p>
-            <button class="btn" onclick="showPage('shop')">Mulai Belanja</button>
+            <h3>Your Bag is Empty</h3>
+            <p>Time to pick your favorite healthy blend!</p>
+            <button class="btn" onclick="showPage('shop')">Start Shopping</button>
           </div>
         </div>
       </div>
@@ -1524,7 +1567,7 @@
       <div id="admin-orders" class="section">
         <div class="section-title">
           <img src="logo1.png" alt="Logo">
-          <h1>Pesanan Masuk</h1>
+          <h1>Live Orders</h1>
         </div>
         <div id="admin-all-orders-list">
           <!-- Orders will be rendered here by renderAdminOrders() -->
@@ -1538,18 +1581,18 @@
           <div class="auth-container">
             <!-- Login Form -->
             <div id="login-form-box" class="auth-form">
-              <h2>Login</h2>
+              <h2>Sign In</h2>
               <div class="form-group">
                 <label>Username</label>
-                <input type="text" id="login-user" class="form-input" placeholder="Masukkan username">
+                <input type="text" id="login-user" class="form-input" placeholder="Your username">
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="login-pass" class="form-input" placeholder="Masukkan password">
+                <input type="password" id="login-pass" class="form-input" placeholder="Your password">
               </div>
-              <button class="btn" style="width:100%" onclick="handleLogin()">Masuk</button>
+              <button class="btn" style="width:100%" onclick="handleLogin()">Sign In</button>
               <div class="auth-toggle">
-                Belum punya akun? <span onclick="toggleAuth('register')">Daftar sekarang</span>
+                New here? <span onclick="toggleAuth('register')">Create an account</span>
               </div>
             </div>
 
@@ -1588,16 +1631,16 @@
           <!-- Feature Group: Account Settings -->
           <div class="app-card" id="biometrics-card">
             <div class="section-title-modern">
-              Informasi Tubuh & Diet
+              Body & Wellness Profile
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
               <div class="form-group">
-                <label>Berat (kg)</label>
+                <label>Weight (kg)</label>
                 <input type="number" id="user-weight" placeholder="0" onchange="saveUserBiometrics()"
                   style="padding:10px; border-radius:10px; border:1px solid #eee;">
               </div>
               <div class="form-group">
-                <label>Tinggi (cm)</label>
+                <label>Height (cm)</label>
                 <input type="number" id="user-height" placeholder="0" onchange="saveUserBiometrics()"
                   style="padding:10px; border-radius:10px; border:1px solid #eee;">
               </div>
@@ -1606,53 +1649,57 @@
 
           <!-- Feature Group: Orders -->
           <div id="customer-panel">
-            <div class="section-title-modern">Riwayat Pesanan Saya</div>
+            <div class="section-title-modern">My Order History</div>
             <div id="order-history-container"></div>
           </div>
 
           <!-- Admin Panel -->
           <div id="admin-panel" style="display:none;">
             <div class="app-card" style="background:#1f6392; color:white; border:none;">
-              <h3 style="margin-bottom:10px;">Dashboard Admin</h3>
+              <h3 style="margin-bottom:10px;">Admin Hub</h3>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
                 <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:12px; text-align:center;">
-                  <div style="font-size:0.7rem; opacity:0.8;">Total Pesanan</div>
+                  <div style="font-size:0.7rem; opacity:0.8;">Total Orders</div>
                   <div style="font-size:1.2rem; font-weight:700;" id="admin-total-orders">0</div>
                 </div>
                 <div style="background:rgba(255,255,255,0.1); padding:10px; border-radius:12px; text-align:center;">
-                  <div style="font-size:0.7rem; opacity:0.8;">Total Pelanggan</div>
+                  <div style="font-size:0.7rem; opacity:0.8;">Total Users</div>
                   <div style="font-size:1.2rem; font-weight:700;" id="admin-total-users">0</div>
                 </div>
               </div>
-              <p style="font-size:0.8rem; opacity:0.8;">Kelola operasional Smoothin' dengan sekali ketuk.</p>
+              <p style="font-size:0.8rem; opacity:0.8;">Manage the heart of Smoothin' operations.</p>
               
               <div class="admin-menu-grid" style="display:grid; gap:10px; margin-top:15px;">
                 <div class="admin-bar-item" onclick="switchAdminTab('orders')">
-                  <span>📦 Pesanan Masuk</span>
+                  <span>📦 Manage Orders</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('reports')">
-                  <span>📊 Laporan Penjualan</span>
+                  <span>📊 Sales Analytics</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('menu')">
-                  <span>🍎 Kelola Produk Menu</span>
+                  <span>🍎 Product Management</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('promos')">
-                  <span>🎟️ Kelola Promo & Diskon</span>
+                  <span>🎟️ Promo & Coupons</span>
+                  <span class="chevron">❯</span>
+                </div>
+                <div class="admin-bar-item" onclick="switchAdminTab('qris')">
+                  <span>💳 QRIS Account Setup</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('feedback')">
-                  <span>💬 Moderasi Ulasan</span>
+                  <span>💬 Review Moderation</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('users')">
-                  <span>👥 Data Pelanggan</span>
+                  <span>👥 Customer Database</span>
                   <span class="chevron">❯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('theme')">
-                  <span>🎨 Kustomisasi Tema</span>
+                  <span>🎨 Visual Customization</span>
                   <span class="chevron">❯</span>
                 </div>
               </div>
@@ -1766,18 +1813,54 @@
     <div id="qrModal" class="modal">
       <div class="modal-content" style="text-align:center;">
         <span class="close-modal" onclick="closeQrModal()">&times;</span>
-        <h2 style="color:#1f6392;">Pesan Langsung</h2>
+        <h2 style="color:#1f6392;">Order Confirmed</h2>
         <div class="qr-section">
-          <p style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">Tunjukkan QR ini ke kasir</p>
+          <p style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">Show this ticket to the counter</p>
           <div id="qrDisplay" style="display:flex; justify-content:center; margin:15px 0;">
-            <!-- QR Image -->
+            <div style="padding:15px; background:white; border:2px solid #eee; border-radius:15px;">
+              <svg width="150" height="150" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="white"/>
+                <path d="M10 10h30v30h-30zM60 10h30v30h-30zM10 60h30v30h-30zM45 45h10v10h-10z" fill="var(--primary-color)"/>
+                <path d="M15 15h20v20h-20zM65 15h20v20h-20zM15 65h20v20h-20z" fill="white"/>
+                <rect x="22" y="22" width="6" height="6" fill="var(--primary-color)"/>
+                <rect x="72" y="22" width="6" height="6" fill="var(--primary-color)"/>
+                <rect x="22" y="72" width="6" height="6" fill="var(--primary-color)"/>
+              </svg>
+            </div>
           </div>
           <div style="background:#f1f5f9; padding:15px; border-radius:15px; margin:15px 0;">
-            <p style="font-size:0.75rem; color:#64748b; margin-bottom:5px;">Nomor Antrian Anda:</p>
+            <p style="font-size:0.75rem; color:#64748b; margin-bottom:5px;">Your Queue Number:</p>
             <div id="queueNumber" style="font-size:2rem; font-weight:900; color:var(--primary-color);">A001</div>
           </div>
           <div id="qr-order-summary" style="font-size:0.8rem; color:#1f6392; font-weight:700; margin-bottom:15px;"></div>
-          <button class="btn" style="margin-top:10px;" onclick="closeQrModal()">Tutup</button>
+          <button class="btn" style="margin-top:10px; width:100%;" onclick="closeQrModal()">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOP QRIS MODAL (Added as requested) -->
+    <div id="shopQrisModal" class="modal">
+      <div class="modal-content" style="text-align:center;">
+        <span class="close-modal" onclick="closeModal('shopQrisModal')">&times;</span>
+        <h2 style="color:#1f6392;">Payment via QRIS</h2>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:20px;">Please scan the QR code below using your banking or e-wallet app.</p>
+        
+        <div style="background:#fff; padding:20px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); display:inline-block; margin-bottom:20px;">
+          <img src="fotoygbnr/logo1.png" style="width:40px; margin-bottom:10px; opacity:0.8;">
+          <div style="border:10px solid #f1f5f9; border-radius:10px; overflow:hidden;">
+            <!-- Placeholder for Shop QRIS Image -->
+            <img id="shopQrisImg" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SMOOTHIN_PAYMENT_GATEWAY" alt="Shop QRIS" style="display:block; width:220px; height:220px;">
+          </div>
+          <div style="margin-top:15px; font-weight:800; color:var(--primary-color); letter-spacing:2px;">QRIS INTERACTIVE</div>
+        </div>
+
+        <div style="background:#fefce8; padding:12px; border-radius:12px; border:1px solid #fef08a; margin-bottom:20px;">
+          <p style="font-size:0.75rem; color:#854d0e; margin:0;">After payment is successful, click the button below to get your queue number.</p>
+        </div>
+
+        <div style="display:grid; gap:10px;">
+          <button class="btn" id="confirmQrisPaymentBtn" style="margin:0;">I Have Paid</button>
+          <button class="btn" style="background:#f1f5f9; color:#64748b; margin:0;" onclick="closeModal('shopQrisModal')">Cancel</button>
         </div>
       </div>
     </div>
@@ -1852,6 +1935,52 @@
       </div>
     </div>
 
+    <!-- ADD MENU MODAL -->
+    <div id="addMenuModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('addMenuModal')">&times;</span>
+        <h2 style="color:var(--primary-color); margin-bottom:20px;">Tambah Produk Baru</h2>
+        <div class="form-group">
+          <label>Nama Produk</label>
+          <input type="text" id="add-menu-name" class="form-input" placeholder="Contoh: Avocado Smooth">
+        </div>
+        <div class="form-group">
+          <label>Kategori</label>
+          <select id="add-menu-category" class="form-input">
+            <option value="KAMU LAGI DIET?">Diet</option>
+            <option value="BOOST YOUR ENERGY!">Energy</option>
+            <option value="AYO JAGA IMUN">Imun</option>
+            <option value="JAGA PENCERNAAN">Pencernaan</option>
+            <option value="SUPPORT YOUR BLOOD">Darah</option>
+            <option value="LEMAH & LETIH? SAATNYA SMOOTHIE">Recovery</option>
+          </select>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label>Harga Reg (Rp)</label>
+            <input type="number" id="add-menu-price-reg" class="form-input" value="15000">
+          </div>
+          <div class="form-group">
+            <label>Harga Med (Rp)</label>
+            <input type="number" id="add-menu-price-med" class="form-input" value="23000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Benefit / Slogan</label>
+          <input type="text" id="add-menu-benefit" class="form-input" placeholder="Contoh: Segar & Sehat">
+        </div>
+        <div class="form-group">
+          <label>URL Gambar (Optional)</label>
+          <input type="text" id="add-menu-img" class="form-input" placeholder="fotoygbnr/nama-file.png">
+        </div>
+        <div class="form-group">
+          <label>Deskripsi Singkat</label>
+          <textarea id="add-menu-desc" class="form-input" style="height:80px; padding:10px;" placeholder="Jelaskan rasa atau keunggulan produk..."></textarea>
+        </div>
+        <button class="btn" onclick="saveNewMenu()">Tambah Produk</button>
+      </div>
+    </div>
+
     <!-- QR SCANNER MODAL -->
     <div id="scannerModal">
       <div class="scanner-modal-content">
@@ -1871,25 +2000,28 @@
       };
 
       const defaultMenu = [
-        { name: "Berry Yogurt Lite", category: "KAMU LAGI DIET?", priceRegular: 15000, priceMedium: 23000, kcalReg: "130 kcal", kcalMed: "180 kcal", desc: "Smoothie rendah kalori dengan stroberi dan yogurt.", composition: "Stroberi, yogurt, madu", benefit: "Diet & Pencernaan", customImg: "fotoygbnr/berryyogurthlite.png", rating: "4.8" },
-        { name: "Apple Oat Fit", category: "KAMU LAGI DIET?", priceRegular: 15000, priceMedium: 23000, kcalReg: "180 kcal", kcalMed: "240 kcal", desc: "Apel dan oat kaya serat.", composition: "Apel, oat, susu", benefit: "Kenyang lebih lama", customImg: "fotoygbnr/appleoatfit.png", rating: "4.7" },
-        { name: "Banana Milk Boost", category: "BOOST YOUR ENERGY!", priceRegular: 15000, priceMedium: 23000, kcalReg: "250 kcal", kcalMed: "320 kcal", desc: "Pisang kaya karbohidrat.", composition: "Pisang, susu, madu", benefit: "Energi instan", customImg: "fotoygbnr/bananamilkboost.png", rating: "4.8" },
-        { name: "Mango Yogurt Boost", category: "AYO JAGA IMUN", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Mangga kaya vitamin C.", composition: "Mangga, yogurt, madu", benefit: "Jaga Imun", customImg: "fotoygbnr/mangoyogurthboost.png", rating: "4.7" },
-        { name: "Papaya Yogurt Smooth", category: "JAGA PENCERNAAN", priceRegular: 15000, priceMedium: 23000, kcalReg: "140 kcal", kcalMed: "190 kcal", desc: "Pepaya bantu pencernaan.", composition: "Pepaya, yogurt, madu", benefit: "Lancarkan BAB", customImg: "fotoygbnr/papayayogurth.png", rating: "4.5" },
-        { name: "Beet Berry Boost", category: "SUPPORT YOUR BLOOD", priceRegular: 15000, priceMedium: 23000, kcalReg: "90 kcal", kcalMed: "130 kcal", desc: "Bit untuk kesehatan darah.", composition: "Bit, stroberi, madu", benefit: "Kesehatan Darah", customImg: "fotoygbnr/beetberryboost.png", rating: "4.8" },
-        { name: "Banana Recovery Smooth", category: "LEMAH & LETIH? SAATNYA SMOOTHIE", priceRegular: 15000, priceMedium: 23000, kcalReg: "250 kcal", kcalMed: "320 kcal", desc: "Pisang untuk pemulihan.", composition: "Pisang, susu, madu", benefit: "Pemulihan Energi", customImg: "fotoygbnr/bananarecoverysmooth.png", rating: "4.9" },
-        { name: "Apple Yogurt Recovery", category: "LEMAH & LETIH? SAATNYA SMOOTHIE", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Pemulihan energi dengan apel segar dan yogurt.", composition: "Apel, Yogurt, Madu", benefit: "Pemulihan Tubuh", customImg: "fotoygbnr/appleyogurthrecovery.png", rating: "4.8" },
-        { name: "Banana Almond Calm", category: "BOOST YOUR ENERGY!", priceRegular: 15000, priceMedium: 23000, kcalReg: "210 kcal", kcalMed: "280 kcal", desc: "Pisang dan almond untuk energi yang menenangkan.", composition: "Pisang, Almond, Susu", benefit: "Energi & Fokus", customImg: "fotoygbnr/bananaalmondcalm.png", rating: "4.7" },
-        { name: "Banana Choco Recovery", category: "LEMAH & LETIH? SAATNYA SMOOTHIE", priceRegular: 15000, priceMedium: 23000, kcalReg: "240 kcal", kcalMed: "310 kcal", desc: "Cokelat dan pisang untuk mood dan energi.", composition: "Pisang, Cokelat, Susu", benefit: "Mood Booster", customImg: "fotoygbnr/bananachocorecovery.png", rating: "4.9" },
-        { name: "Banana Oat Digest", category: "JAGA PENCERNAAN", priceRegular: 15000, priceMedium: 23000, kcalReg: "200 kcal", kcalMed: "270 kcal", desc: "Pisang dan oat untuk pencernaan sehat.", composition: "Pisang, Oat, Madu", benefit: "Pencernaan Lancar", customImg: "fotoygbnr/bananaoatdigest.png", rating: "4.8" },
-        { name: "Banana Protein Smooth", category: "BOOST YOUR ENERGY!", priceRegular: 18000, priceMedium: 26000, kcalReg: "280 kcal", kcalMed: "360 kcal", desc: "Tinggi protein untuk pembentukan otot.", composition: "Pisang, Whey Protein, Susu", benefit: "Massa Otot", customImg: "fotoygbnr/bananaproteinsmooth.png", rating: "4.9" },
-        { name: "Berry Yogurt Relax", category: "KAMU LAGI DIET?", priceRegular: 15000, priceMedium: 23000, kcalReg: "120 kcal", kcalMed: "170 kcal", desc: "Mix berry yang menenangkan pikiran.", composition: "Mix Berry, Yogurt", benefit: "Relaksasi", customImg: "fotoygbnr/berryyogurthrelax.png", rating: "4.7" },
-        { name: "Choco Banana Mood", category: "BOOST YOUR ENERGY!", priceRegular: 15000, priceMedium: 23000, kcalReg: "230 kcal", kcalMed: "300 kcal", desc: "Perpaduan klasik cokelat dan pisang.", composition: "Cokelat, Pisang, Susu", benefit: "Mood & Energi", customImg: "fotoygbnr/chocobananamood.png", rating: "4.8" },
-        { name: "Choco Oat Energy", category: "BOOST YOUR ENERGY!", priceRegular: 15000, priceMedium: 23000, kcalReg: "220 kcal", kcalMed: "290 kcal", desc: "Cokelat dan oat untuk energi tahan lama.", composition: "Cokelat, Oat, Madu", benefit: "Energi Awet", customImg: "fotoygbnr/chocooatenergy.png", rating: "4.7" },
-        { name: "Dragonana", category: "AYO JAGA IMUN", priceRegular: 15000, priceMedium: 23000, kcalReg: "170 kcal", kcalMed: "230 kcal", desc: "Buah naga dan pisang yang eksotis.", composition: "Buah Naga, Pisang", benefit: "Antioksidan", customImg: "fotoygbnr/dragonana.png", rating: "4.8" },
-        { name: "Guava Smooth Boost", category: "AYO JAGA IMUN", priceRegular: 15000, priceMedium: 23000, kcalReg: "150 kcal", kcalMed: "210 kcal", desc: "Jambu biji kaya vitamin C.", composition: "Jambu Biji, Madu", benefit: "Imunitas Tinggi", customImg: "fotoygbnr/guavasmoothboost.png", rating: "4.7" },
-        { name: "Strawberry Milk Fresh", category: "AYO JAGA IMUN", priceRegular: 15000, priceMedium: 23000, kcalReg: "140 kcal", kcalMed: "190 kcal", desc: "Kesegaran strawberry dan susu.", composition: "Strawberry, Susu", benefit: "Segar & Sehat", customImg: "fotoygbnr/strawberrymilkfresh.png", rating: "4.8" },
-        { name: "Strawnana", category: "AYO JAGA IMUN", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Klasik strawberry dan pisang.", composition: "Strawberry, Pisang", benefit: "Favorit Semua", customImg: "fotoygbnr/strawnana.png", rating: "4.9" }
+        { name: "Berry Yogurt Lite", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "130 kcal", kcalMed: "180 kcal", desc: "Low-calorie blend with fresh strawberries & yogurt.", composition: "Strawberry, Yogurt, Honey", benefit: "Diet & Digestion", customImg: "fotoygbnr/berryyogurthlite.png", rating: "4.8" },
+        { name: "Apple Oat Fit", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "180 kcal", kcalMed: "240 kcal", desc: "Fiber-rich apple & oat fusion.", composition: "Apple, Oat, Milk", benefit: "Stay Full Longer", customImg: "fotoygbnr/appleoatfit.png", rating: "4.7" },
+        { name: "Banana Milk Boost", category: "ENERGY BOOST", priceRegular: 15000, priceMedium: 23000, kcalReg: "250 kcal", kcalMed: "320 kcal", desc: "Energy-packed banana blast.", composition: "Banana, Milk, Honey", benefit: "Instant Energy", customImg: "fotoygbnr/bananamilkboost.png", rating: "4.8" },
+        { name: "Mango Yogurt Boost", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Vitamin C rich mango delight.", composition: "Mango, Yogurt, Honey", benefit: "Immune Guard", customImg: "fotoygbnr/mangoyogurthboost.png", rating: "4.7" },
+        { name: "Papaya Yogurt Smooth", category: "DIGESTIVE BLISS", priceRegular: 15000, priceMedium: 23000, kcalReg: "140 kcal", kcalMed: "190 kcal", desc: "Papaya blend for healthy digestion.", composition: "Papaya, Yogurt, Honey", benefit: "Digestion Support", customImg: "fotoygbnr/papayayogurth.png", rating: "4.5" },
+        { name: "Beet Berry Boost", category: "BLOOD HEALTH", priceRegular: 15000, priceMedium: 23000, kcalReg: "90 kcal", kcalMed: "130 kcal", desc: "Beetroot power for blood health.", composition: "Beet, Strawberry, Honey", benefit: "Blood Vitality", customImg: "fotoygbnr/beetberryboost.png", rating: "4.8" },
+        { name: "Banana Recovery Smooth", category: "RECOVERY MODE", priceRegular: 15000, priceMedium: 23000, kcalReg: "250 kcal", kcalMed: "320 kcal", desc: "Banana recovery for post-workout.", composition: "Banana, Milk, Honey", benefit: "Energy Recharge", customImg: "fotoygbnr/bananarecoverysmooth.png", rating: "4.9" },
+        { name: "Apple Yogurt Recovery", category: "RECOVERY MODE", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Recharge with fresh apple & yogurt.", composition: "Apple, Yogurt, Honey", benefit: "Body Recovery", customImg: "fotoygbnr/appleyogurthrecovery.png", rating: "4.8" },
+        { name: "Banana Almond Calm", category: "ENERGY BOOST", priceRegular: 15000, priceMedium: 23000, kcalReg: "210 kcal", kcalMed: "280 kcal", desc: "Calming banana & almond energy.", composition: "Banana, Almond, Milk", benefit: "Energy & Focus", customImg: "fotoygbnr/bananaalmondcalm.png", rating: "4.7" },
+        { name: "Banana Choco Recovery", category: "RECOVERY MODE", priceRegular: 15000, priceMedium: 23000, kcalReg: "240 kcal", kcalMed: "310 kcal", desc: "Choco-banana mood & energy booster.", composition: "Banana, Chocolate, Milk", benefit: "Mood Booster", customImg: "fotoygbnr/bananachocorecovery.png", rating: "4.9" },
+        { name: "Banana Oat Digest", category: "DIGESTIVE BLISS", priceRegular: 15000, priceMedium: 23000, kcalReg: "200 kcal", kcalMed: "270 kcal", desc: "Healthy digestion with banana & oat.", composition: "Banana, Oat, Honey", benefit: "Healthy Gut", customImg: "fotoygbnr/bananaoatdigest.png", rating: "4.8" },
+        { name: "Banana Protein Smooth", category: "ENERGY BOOST", priceRegular: 18000, priceMedium: 26000, kcalReg: "280 kcal", kcalMed: "360 kcal", desc: "High protein for muscle building.", composition: "Banana, Whey Protein, Milk", benefit: "Muscle Mass", customImg: "fotoygbnr/bananaproteinsmooth.png", rating: "4.9" },
+        { name: "Berry Yogurt Relax", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "120 kcal", kcalMed: "170 kcal", desc: "Soothing mix berry relaxation.", composition: "Mix Berry, Yogurt", benefit: "Relaxation", customImg: "fotoygbnr/berryyogurthrelax.png", rating: "4.7" },
+        { name: "Choco Banana Mood", category: "ENERGY BOOST", priceRegular: 15000, priceMedium: 23000, kcalReg: "230 kcal", kcalMed: "300 kcal", desc: "Classic choco-banana harmony.", composition: "Chocolate, Banana, Milk", benefit: "Mood & Energy", customImg: "fotoygbnr/chocobananamood.png", rating: "4.8" },
+        { name: "Choco Oat Energy", category: "ENERGY BOOST", priceRegular: 15000, priceMedium: 23000, kcalReg: "220 kcal", kcalMed: "290 kcal", desc: "Long-lasting energy from choco & oat.", composition: "Chocolate, Oat, Honey", benefit: "Lasting Energy", customImg: "fotoygbnr/chocooatenergy.png", rating: "4.7" },
+        { name: "Dragonana", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "170 kcal", kcalMed: "230 kcal", desc: "Exotic dragon fruit & banana.", composition: "Dragon Fruit, Banana", benefit: "Antioxidant", customImg: "fotoygbnr/dragonana.png", rating: "4.8" },
+        { name: "Guava Smooth Boost", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "150 kcal", kcalMed: "210 kcal", desc: "Immunity-boosting guava mix.", composition: "Guava, Honey", benefit: "High Immunity", customImg: "fotoygbnr/guavasmoothboost.png", rating: "4.7" },
+        { name: "Strawberry Milk Fresh", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "140 kcal", kcalMed: "190 kcal", desc: "Fresh strawberry & milk fusion.", composition: "Strawberry, Milk", benefit: "Fresh & Healthy", customImg: "fotoygbnr/strawberrymilkfresh.png", rating: "4.8" },
+        { name: "Strawnana Bliss", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Classic strawberry & banana bliss.", composition: "Strawberry, Banana", benefit: "All-time Favorite", customImg: "fotoygbnr/strawnana.png", rating: "4.9" },
+        { name: "Apple Luna", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "150 kcal", kcalMed: "210 kcal", desc: "Luna's favorite fresh apple.", composition: "Apple, Honey", benefit: "Fresh & Fit", customImg: "fotoygbnr/appluna.png", rating: "4.8" },
+        { name: "Guava Strawberry Mix", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "140 kcal", kcalMed: "200 kcal", desc: "Guava & strawberry immunity mix.", composition: "Guava, Strawberry", benefit: "High Vitamin C", customImg: "fotoygbnr/guavastrawberrymix.png", rating: "4.7" },
+        { name: "Guava Boost Smooth", category: "IMMUNE SHIELD", priceRegular: 15000, priceMedium: 23000, kcalReg: "160 kcal", kcalMed: "220 kcal", desc: "Boost your immune with guava.", composition: "Guava, Yogurt", benefit: "Immunity Boost", customImg: "fotoygbnr/guavaboostsmooth.png", rating: "4.8" }
       ];
 
       const defaultPromos = {
@@ -1904,8 +2036,8 @@
       ];
 
       let menuDatabase = JSON.parse(localStorage.getItem('smoothinMenu')) || defaultMenu;
-      // Auto-update if old menu detected (7 items was the previous default)
-      if (menuDatabase.length <= 7 && defaultMenu.length > 7) {
+      // Auto-update if old menu detected or items missing
+      if (menuDatabase.length < defaultMenu.length) {
         menuDatabase = defaultMenu;
         localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
       }
@@ -1963,7 +2095,7 @@
         }
 
         list.innerHTML = filtered.map(m => {
-          const btnText = isAdmin ? 'Edit' : 'Beli';
+          const btnText = isAdmin ? 'Edit' : 'Order';
           const cardAction = isAdmin ? `quickEditMenu('${m.name.replace(/'/g, "\\'")}')` : `openModal('${m.name.replace(/'/g, "\\'")}')`;
           return `
             <div class="product-card" onclick="${cardAction}">
@@ -2027,12 +2159,12 @@
           </div>
           <div class="app-card" style="margin-top:20px; background:var(--primary-color); color:white;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-              <span style="opacity:0.9;">Total Bayar:</span>
+              <span style="opacity:0.9;">Total Amount:</span>
               <strong style="font-size:1.2rem;">Rp${total.toLocaleString()}</strong>
             </div>
-            <button class="btn" style="width:100%; background:white; color:var(--primary-color);" onclick="checkoutCart()">Checkout Sekarang</button>
+            <button class="btn" style="width:100%; background:white; color:var(--primary-color);" onclick="checkoutCart()">Checkout Now</button>
           </div>
-          <button class="btn" style="width:100%; margin-top:12px; background:#f1f5f9; color:#64748b;" onclick="clearCart()">Kosongkan Keranjang</button>
+          <button class="btn" style="width:100%; margin-top:12px; background:#f1f5f9; color:#64748b;" onclick="clearCart()">Empty Bag</button>
         `;
       }
 
@@ -2041,11 +2173,11 @@
         localStorage.setItem('smoothinCart', JSON.stringify(cart));
         updateCartBadge();
         renderCart();
-        showToast('Item dihapus', 'info');
+        showToast('Item removed', 'info');
       }
 
       function clearCart() {
-        if (confirm('Kosongkan semua isi keranjang?')) {
+        if (confirm('Empty your entire bag?')) {
           cart = [];
           localStorage.setItem('smoothinCart', JSON.stringify(cart));
           updateCartBadge();
@@ -2055,7 +2187,7 @@
 
       function checkoutCart() {
         if (!currentUser) {
-          showToast('Silakan login untuk checkout.', 'error');
+          showToast('Please sign in to order!', 'info');
           showPage('account');
           return;
         }
@@ -2072,7 +2204,7 @@
           items: [...cart],
           price: orderTotal,
           total: orderTotal,
-          status: 'Menunggu',
+          status: 'Pending',
           time: new Date().toISOString(),
           payment: 'Tunai'
         };
@@ -2098,6 +2230,8 @@
         
         showModal('qrModal');
         showToast('Pesanan berhasil! Silakan ke kasir.', 'success');
+        refreshAdminView();
+        renderOrderTracker();
       }
 
       function showToast(message, type = 'success') {
@@ -2119,6 +2253,7 @@
         if (pageId === 'custom') initCustomPage();
         if (pageId === 'discount') renderDiscountPage();
         if (pageId === 'admin-orders') renderAdminOrders();
+        renderOrderTracker();
         window.scrollTo(0, 0);
       }
 
@@ -2142,7 +2277,12 @@
       }
 
       function addToCart(isCustom = false) {
-        if (currentUser && currentUser.role === 'admin') return showToast('Admin tidak bisa memesan.', 'error');
+        if (!currentUser) {
+          showToast('Please sign in to order!', 'info');
+          showPage('account');
+          return;
+        }
+        if (currentUser && currentUser.role === 'admin') return showToast('Admin cannot place orders.', 'error');
         const qty = parseInt(document.getElementById(isCustom ? 'customQtyInput' : 'qtyInput')?.value) || 1;
         const size = isCustom ? (document.querySelector('input[name="customSize"]:checked')?.value || 'regular') : (document.getElementById('sizeSelect')?.value || 'regular');
         const unitPrice = isCustom ? (size === 'medium' ? 25000 : 18000) : getPrice();
@@ -2211,7 +2351,51 @@
         closeModal('editMenuModal');
         renderMenu();
         
-        // Also refresh admin menu tab if active
+        if (localStorage.getItem('smoothinAdminTab') === 'menu') {
+          renderAdminMenu();
+        }
+      }
+
+      function openAddMenuModal() {
+        // Reset fields
+        document.getElementById('add-menu-name').value = '';
+        document.getElementById('add-menu-benefit').value = '';
+        document.getElementById('add-menu-img').value = '';
+        document.getElementById('add-menu-desc').value = '';
+        showModal('addMenuModal');
+      }
+
+      function saveNewMenu() {
+        const name = document.getElementById('add-menu-name').value.trim();
+        const category = document.getElementById('add-menu-category').value;
+        const priceReg = parseInt(document.getElementById('add-menu-price-reg').value) || 0;
+        const priceMed = parseInt(document.getElementById('add-menu-price-med').value) || 0;
+        const benefit = document.getElementById('add-menu-benefit').value.trim();
+        const img = document.getElementById('add-menu-img').value.trim();
+        const desc = document.getElementById('add-menu-desc').value.trim();
+
+        if (!name) return showToast('Nama produk harus diisi!', 'error');
+
+        const newProd = {
+          name: name,
+          category: category,
+          priceRegular: priceReg,
+          priceMedium: priceMed,
+          benefit: benefit,
+          customImg: img,
+          desc: desc,
+          rating: "5.0", // New products start with 5.0
+          kcalReg: "150 kcal", // Defaults
+          kcalMed: "220 kcal"
+        };
+
+        menuDatabase.push(newProd);
+        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
+        
+        showToast('Produk baru berhasil ditambahkan!');
+        closeModal('addMenuModal');
+        renderMenu();
+        
         if (localStorage.getItem('smoothinAdminTab') === 'menu') {
           renderAdminMenu();
         }
@@ -2221,6 +2405,18 @@
         currentItem = menuDatabase.find(m => m.name === name);
         document.getElementById('modalTitle').innerText = currentItem.name;
         document.getElementById('modalImage').src = getProductImage(currentItem.name);
+        
+        const detailEl = document.getElementById('modalDetail');
+        detailEl.innerHTML = `
+          <div style="margin-bottom:15px;">
+            <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:10px;">${currentItem.desc || ''}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="background:#f0f9ff; color:#0369a1; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">✨ ${currentItem.benefit}</span>
+              <span style="background:#f1f5f9; color:#475569; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">🍎 ${currentItem.composition}</span>
+            </div>
+          </div>
+        `;
+        
         showModal('productModal');
       }
 
@@ -2292,9 +2488,16 @@
           document.getElementById('auth-view').style.display = 'block';
           document.getElementById('user-view').style.display = 'none';
         }
+        renderOrderTracker();
       }
 
       function handleDirectOrder(isCustom, isVerified = false) {
+        if (!currentUser) {
+          showToast('Please sign in to order!', 'info');
+          showPage('account');
+          return;
+        }
+        
         if (isCustom && selectedFruits.length === 0) {
           showToast('Pilih minimal 1 buah dulu ya kak! 🥤', 'error');
           return;
@@ -2304,25 +2507,50 @@
         const queueNum = 'A' + Math.floor(Math.random() * 900 + 100);
         
         if (paymentMethod === 'qris' && !isVerified) {
-          // Store currentItem temporarily in case of page state changes during scan
-          if (!isCustom && currentItem) localStorage.setItem('temp_order_item', JSON.stringify(currentItem));
+          // Save state before opening camera
+          if (!isCustom && currentItem) {
+            const options = {
+              size: document.getElementById('sizeSelect').value,
+              qty: parseInt(document.getElementById('qtyInput').value) || 1,
+              item: currentItem
+            };
+            localStorage.setItem('temp_order_data', JSON.stringify(options));
+          }
           
-          // Open scanner for payment verification as requested
-          const modal = document.getElementById('scannerModal');
-          modal.style.display = 'flex';
-          startScanner(isCustom); // Pass isCustom to scanner
+          const scanModal = document.getElementById('scannerModal');
+          scanModal.style.display = 'flex';
+          startScanner(isCustom);
+          return;
         } else {
-          // If this is from QRIS success, try to restore currentItem
-          if (!isCustom && !currentItem) {
-            const temp = localStorage.getItem('temp_order_item');
+          let details = "";
+          let unitPrice = 0;
+          let qty = 1;
+
+          if (isVerified && !isCustom) {
+            // Restore from saved data after QRIS scan
+            const temp = JSON.parse(localStorage.getItem('temp_order_data'));
             if (temp) {
-              currentItem = JSON.parse(temp);
-              localStorage.removeItem('temp_order_item');
+              currentItem = temp.item;
+              const size = temp.size;
+              qty = temp.qty;
+              unitPrice = size === 'regular' ? currentItem.priceRegular : currentItem.priceMedium;
+              details = `${currentItem.name} (${size})`;
+              localStorage.removeItem('temp_order_data');
             }
+          } else if (isCustom) {
+            details = 'Custom Blend: ' + selectedFruits.join(', ');
+            unitPrice = 25000;
+            qty = 1;
+          } else {
+            // Normal Direct Order (Cash)
+            const size = document.getElementById('sizeSelect').value;
+            qty = parseInt(document.getElementById('qtyInput').value) || 1;
+            unitPrice = size === 'regular' ? currentItem.priceRegular : currentItem.priceMedium;
+            details = `${currentItem.name} (${size})`;
           }
 
-          if (!isCustom && !currentItem) {
-            showToast('Gagal memproses: Produk tidak terdeteksi. Silakan coba lagi.', 'error');
+          if (!details || unitPrice === 0) {
+            showToast('Gagal memproses: Data tidak valid.', 'error');
             return;
           }
 
@@ -2371,6 +2599,7 @@
           }
           
           refreshAdminView();
+          renderOrderTracker();
         }
       }
 
@@ -2770,13 +2999,14 @@
         document.querySelectorAll('.admin-bar-item').forEach(item => {
           const itemText = item.innerText.toLowerCase();
           const tabMap = {
-            'orders': 'pesanan',
-            'reports': 'laporan',
-            'menu': 'produk',
+            'orders': 'orders',
+            'reports': 'reports',
+            'menu': 'product',
             'promos': 'promo',
-            'feedback': 'ulasan',
-            'users': 'pelanggan',
-            'theme': 'tema'
+            'qris': 'qris',
+            'feedback': 'review',
+            'users': 'customer',
+            'theme': 'visual'
           };
           const searchKey = tabMap[tab];
           if (searchKey && itemText.includes(searchKey)) {
@@ -2788,17 +3018,14 @@
           }
         });
         
-        container.innerHTML = `<div style="text-align:center; padding:20px;"><div class="spinner"></div></div>`;
-        
-        setTimeout(() => {
-          if (tab === 'reports') renderAdminReports();
-          else if (tab === 'orders') renderAdminOrders('admin-tab-container');
-          else if (tab === 'menu') renderAdminMenu();
-          else if (tab === 'promos') renderAdminPromos();
-          else if (tab === 'feedback') renderAdminFeedbackAdmin();
-          else if (tab === 'users') renderAdminUsers();
-          else if (tab === 'theme') renderAdminTheme();
-        }, 300);
+        if (tab === 'reports') renderAdminReports();
+        else if (tab === 'orders') renderAdminOrders('admin-tab-container');
+        else if (tab === 'menu') renderAdminMenu();
+        else if (tab === 'promos') renderAdminPromos();
+        else if (tab === 'qris') renderAdminQris();
+        else if (tab === 'feedback') renderAdminFeedbackAdmin();
+        else if (tab === 'users') renderAdminUsers();
+        else if (tab === 'theme') renderAdminTheme();
       }
 
       function renderAdminUsers() {
@@ -2948,25 +3175,39 @@
           <div class="app-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
               <h4 style="color:var(--primary-color);">Kelola Menu</h4>
-              <button class="buy-btn-sm" style="margin:0; width:auto;" onclick="showToast('Fitur tambah menu segera hadir!')">+ Tambah</button>
+              <button class="buy-btn-sm" style="margin:0; width:auto;" onclick="openAddMenuModal()">+ Tambah</button>
             </div>
             <div style="display:grid; gap:12px;">
               ${menuDatabase.map((m, i) => `
-                <div style="display:flex; align-items:center; gap:10px; padding:12px; border:1px solid #f1f5f9; border-radius:15px; background:white;">
-                  <img src="${getProductImage(m.name)}" style="width:50px; height:50px; border-radius:10px; object-fit:cover; border:1px solid #eee;">
+                <div style="display:flex; align-items:center; gap:12px; padding:12px; border:1px solid #f1f5f9; border-radius:18px; background:white;">
+                  <img src="${getProductImage(m.name)}" style="width:55px; height:55px; border-radius:12px; object-fit:cover; border:1px solid #eee;">
                   <div style="flex:1;">
                     <div style="font-size:0.85rem; font-weight:800; color:var(--primary-color);">${m.name}</div>
-                    <div style="display:flex; align-items:center; gap:5px; margin-top:4px;">
-                      <span style="font-size:0.7rem; color:#64748b;">Rp</span>
-                      <input type="number" id="menu-price-${i}" value="${m.priceRegular}" style="width:70px; font-size:0.75rem; border:1px solid #eee; border-radius:5px; padding:2px 5px;">
+                    <div style="display:flex; gap:10px; margin-top:4px;">
+                      <span style="font-size:0.65rem; color:#64748b;">Reg: <strong>Rp${m.priceRegular.toLocaleString()}</strong></span>
+                      <span style="font-size:0.65rem; color:#64748b;">Med: <strong>Rp${m.priceMedium.toLocaleString()}</strong></span>
                     </div>
                   </div>
-                  <button class="btn-action btn-view" style="background:var(--primary-color); color:white; padding:8px;" onclick="saveMenuPrice(${i})">💾</button>
+                  <div style="display:flex; gap:6px;">
+                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center;" onclick="quickEditMenu('${m.name.replace(/'/g, "\\'")}')">✏️</button>
+                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:#fee2e2; color:#ef4444; border:1px solid #fecaca; display:flex; align-items:center; justify-content:center;" onclick="deleteMenuItem(${i})">🗑️</button>
+                  </div>
                 </div>
               `).join('')}
             </div>
+            ${menuDatabase.length === 0 ? '<div style="text-align:center; padding:30px; color:#94a3b8;">Belum ada menu. Klik Tambah untuk memulai.</div>' : ''}
           </div>
         `;
+      }
+
+      function deleteMenuItem(index) {
+        if (!confirm(`Hapus menu "${menuDatabase[index].name}"?`)) return;
+        
+        menuDatabase.splice(index, 1);
+        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
+        showToast('Produk berhasil dihapus');
+        renderAdminMenu();
+        renderMenu();
       }
 
       function saveMenuPrice(index) {
@@ -3017,7 +3258,7 @@
         
         localStorage.setItem('smoothinPromos', JSON.stringify(promos));
         promosDatabase = promos; // Update global
-        showToast('Promo berhasil diperbarui!');
+        showToast('Promo successfully updated!');
         renderAdminPromos();
       }
 
@@ -3026,13 +3267,18 @@
         const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
         container.innerHTML = `
           <div class="app-card">
-            <h4 style="color:var(--primary-color); margin-bottom:15px;">Kelola Ulasan</h4>
+            <h4 style="color:var(--primary-color); margin-bottom:15px;">Review Moderation</h4>
             <div style="display:grid; gap:10px;">
               ${feedbacks.map((f, i) => `
-                <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; position:relative;">
+                <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; position:relative; background:${f.isVisible === false ? '#f8fafc' : 'white'}; opacity:${f.isVisible === false ? '0.6' : '1'}">
                   <div style="font-weight:700; font-size:0.85rem;">${f.name} <span style="color:#fbbf24;">${'★'.repeat(f.stars)}</span></div>
                   <div style="font-size:0.8rem; color:#64748b;">"${f.msg}"</div>
-                  <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer;" onclick="deleteFeedback(${i})">🗑️</button>
+                  <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer; font-size:1.1rem;" onclick="toggleFeedbackVisibility(${i})" title="${f.isVisible === false ? 'Show' : 'Hide'}">
+                    ${f.isVisible === false ? '🙈' : '👁️'}
+                  </button>
+                  <div style="font-size:0.6rem; color:${f.isVisible === false ? '#ef4444' : '#22c55e'}; margin-top:4px; font-weight:700;">
+                    ${f.isVisible === false ? 'Hidden from public' : 'Visible to public'}
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -3040,12 +3286,11 @@
         `;
       }
 
-      function deleteFeedback(index) {
-        if (!confirm('Hapus ulasan ini?')) return;
+      function toggleFeedbackVisibility(index) {
         const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
-        feedbacks.splice(index, 1);
+        feedbacks[index].isVisible = feedbacks[index].isVisible === false ? true : false;
         localStorage.setItem('smoothinFeedback', JSON.stringify(feedbacks));
-        showToast('Ulasan dihapus');
+        showToast(feedbacks[index].isVisible ? 'Review is now visible' : 'Review is now hidden');
         renderAdminFeedbackAdmin();
         renderTestimonials();
       }
@@ -3054,17 +3299,17 @@
         const container = document.getElementById('admin-tab-container');
         container.innerHTML = `
           <div class="app-card">
-            <h4 style="color:var(--primary-color); margin-bottom:15px;">Pengaturan Tema</h4>
+            <h4 style="color:var(--primary-color); margin-bottom:15px;">Visual Settings</h4>
             <div style="display:grid; gap:15px;">
               <div class="form-group">
-                <label>Warna Utama (Primary)</label>
+                <label>Primary Brand Color</label>
                 <input type="color" id="color-primary" value="#0f4c75" style="width:100%; height:40px; border:none; padding:0; background:none;" onchange="updateLiveTheme()">
               </div>
               <div class="form-group">
-                <label>Warna Aksen (Accent)</label>
+                <label>Accent Color</label>
                 <input type="color" id="color-accent" value="#3282b8" style="width:100%; height:40px; border:none; padding:0; background:none;" onchange="updateLiveTheme()">
               </div>
-              <button class="btn" onclick="saveThemeSettings()">Simpan Perubahan</button>
+              <button class="btn" onclick="saveThemeSettings()">Save Changes</button>
             </div>
           </div>
         `;
@@ -3082,7 +3327,63 @@
         const accent = document.getElementById('color-accent').value;
         const theme = { primary: primary, accent: accent };
         localStorage.setItem('smoothinTheme', JSON.stringify(theme));
-        showToast('Tema berhasil disimpan!');
+        showToast('Theme saved successfully!');
+      }
+
+      function renderAdminQris() {
+        const container = document.getElementById('admin-tab-container');
+        const currentQr = localStorage.getItem('smoothinQrisImg') || 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SMOOTHIN_PAYMENT_GATEWAY';
+        
+        container.innerHTML = `
+          <div class="app-card" style="text-align:center;">
+            <h4 style="color:var(--primary-color); margin-bottom:15px;">QRIS Management</h4>
+            
+            <div id="qris-display-area" style="padding:20px; background:white; border:2px solid #f1f5f9; border-radius:20px; display:inline-block; margin-bottom:20px; cursor:pointer;" onclick="toggleQrisEdit()">
+              <img src="${currentQr}" id="admin-qris-big-preview" style="width:250px; height:250px; display:block; border-radius:10px;">
+              <p style="font-size:0.7rem; color:#64748b; margin-top:10px;">(Click QR to edit image URL)</p>
+            </div>
+
+            <div id="qris-edit-area" style="display:none; text-align:left; border-top:1px solid #f1f5f9; padding-top:20px;">
+              <div class="form-group">
+                <label>Update QRIS Image URL</label>
+                <input type="text" id="admin-qris-url" value="${currentQr}" style="width:100%; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+              </div>
+              <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn" onclick="saveQrisSettings()" style="flex:1;">Save Link</button>
+                <button class="btn" onclick="toggleQrisEdit()" style="flex:1; background:#f1f5f9; color:#64748b;">Cancel</button>
+              </div>
+            </div>
+
+            <div style="background:#f0f9ff; padding:15px; border-radius:15px; text-align:left; border:1px solid #bae6fd; margin-top:10px;">
+              <p style="font-size:0.75rem; color:#0369a1; margin:0; line-height:1.4;">
+                <strong>Admin Tip:</strong> Show this QR code to your customer when they choose the cashless payment method.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      function toggleQrisEdit() {
+        const editArea = document.getElementById('qris-edit-area');
+        const displayArea = document.getElementById('qris-display-area');
+        if (editArea.style.display === 'none') {
+          editArea.style.display = 'block';
+          displayArea.style.opacity = '0.5';
+        } else {
+          editArea.style.display = 'none';
+          displayArea.style.opacity = '1';
+        }
+      }
+
+      function saveQrisSettings() {
+        const url = document.getElementById('admin-qris-url').value;
+        if (!url) {
+          showToast('Please enter a valid URL', 'error');
+          return;
+        }
+        localStorage.setItem('smoothinQrisImg', url);
+        document.getElementById('admin-qris-preview').src = url;
+        showToast('QRIS Account updated successfully!');
       }
 
       function renderAdminOrders(targetId) { 
@@ -3095,11 +3396,11 @@
           container.innerHTML = `
             <div class="app-card">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h4 style="color:var(--primary-color);">📦 Pesanan Masuk</h4>
-                <button class="btn-logout" style="font-size:0.65rem; padding:4px 10px; width:auto; height:auto; background:#fee2e2;" onclick="clearAllOrders()">Hapus Semua</button>
+                <h4 style="color:var(--primary-color);">📦 Live Orders</h4>
+                <button class="btn-logout" style="font-size:0.65rem; padding:4px 10px; width:auto; height:auto; background:#fee2e2;" onclick="clearAllOrders()">Clear All</button>
               </div>
               <div id="admin-orders-inner-list" style="display:grid; gap:10px;">
-                ${orders.length === 0 ? '<div style="text-align:center; padding:20px; color:#94a3b8;">Belum ada pesanan masuk.</div>' : ''}
+                ${orders.length === 0 ? '<div style="text-align:center; padding:20px; color:#94a3b8;">No orders yet. Ready to glow?</div>' : ''}
               </div>
             </div>
           `;
@@ -3119,7 +3420,7 @@
           itemName = o.items.map(i => i.name).join(', ');
         }
 
-        const actionFn = o.status === 'Selesai' ? `showOrderDetails('${o.id}')` : `completeOrder('${o.id}')`;
+        const actionFn = o.status === 'Completed' ? `showOrderDetails('${o.id}')` : `completeOrder('${o.id}')`;
 
         return `
           <div class="order-item" style="padding:12px; border:1px solid #f1f5f9; border-radius:12px;">
@@ -3128,11 +3429,11 @@
                 <div style="font-size:0.6rem; color:#94a3b8; font-weight:700;">${customerName}</div>
                 <div style="font-weight:700; font-size:0.85rem; color:var(--primary-color);">${itemName}</div>
               </div>
-              <span class="status-badge ${o.status === 'Selesai' ? 'status-delivered' : 'status-accepted'}" style="font-size:0.55rem; padding:2px 6px;">${o.status || 'Pending'}</span>
+              <span class="status-badge ${o.status === 'Completed' ? 'status-delivered' : 'status-accepted'}" style="font-size:0.55rem; padding:2px 6px;">${o.status || 'Pending'}</span>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
               <span style="font-size:0.75rem; color:#64748b;">Rp${orderPrice.toLocaleString()}</span>
-              <button class="buy-btn-sm" style="margin:0; width:auto; font-size:0.65rem; padding:4px 10px;" onclick="${actionFn}">${o.status === 'Selesai' ? 'Detail' : 'Selesaikan'}</button>
+              <button class="buy-btn-sm" style="margin:0; width:auto; font-size:0.65rem; padding:4px 10px;" onclick="${actionFn}">${o.status === 'Completed' ? 'View Details' : 'Complete'}</button>
             </div>
           </div>
         `;
@@ -3180,7 +3481,7 @@
           </div>
           <div class="detail-row">
             <label>Status</label>
-            <span class="status-badge ${order.status === 'Selesai' ? 'status-delivered' : 'status-accepted'}">${order.status || 'Pending'}</span>
+            <span class="status-badge ${order.status === 'Completed' ? 'status-delivered' : 'status-accepted'}">${order.status || 'Pending'}</span>
           </div>
           
           ${itemsHtml}
@@ -3205,16 +3506,66 @@
         const ordersList = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
         const idx = ordersList.findIndex(o => o.id === orderId);
         if (idx !== -1) {
-          if (ordersList[idx].status === 'Selesai') {
-            showToast('Pesanan ini sudah selesai.');
+          if (ordersList[idx].status === 'Completed') {
+            showToast('Order already completed');
             return;
           }
-          ordersList[idx].status = 'Selesai';
+          ordersList[idx].status = 'Completed';
           localStorage.setItem('smoothinOrders', JSON.stringify(ordersList));
-          showToast('Pesanan Selesai! ✅');
+          showToast('Order Completed! ✅');
           
           refreshAdminView();
+          renderOrderTracker();
         }
+      }
+
+      let lastOrderTrackerState = "";
+      function renderOrderTracker() {
+        const container = document.getElementById('order-tracker-container');
+        if (!container) return;
+        
+        const user = JSON.parse(localStorage.getItem('smoothinUser'));
+        const allOrders = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
+        
+        let myOrder = null;
+        if (user && user.role !== 'admin') {
+           const active = allOrders.filter(o => {
+             return o.customer && user.user && o.customer.toLowerCase() === user.user.toLowerCase() && 
+                    o.status !== 'Completed' && o.status !== 'Selesai';
+           });
+           if (active.length > 0) myOrder = active[active.length - 1];
+        }
+
+        const currentState = myOrder ? myOrder.id : "none";
+        if (currentState === lastOrderTrackerState) return;
+        lastOrderTrackerState = currentState;
+
+        if (!myOrder) {
+          container.style.display = 'none';
+          container.innerHTML = '';
+          return;
+        }
+        
+        container.innerHTML = `
+          <div class="order-tracker-bar">
+            <div class="tracker-pulse"></div>
+            <div class="tracker-text">
+              Order #${myOrder.id.slice(-4)} — Waiting Confirmation
+              <div class="tracker-sub">Estimasi pesanan selesai: 5-10 Menit</div>
+            </div>
+            <button class="buy-btn-sm" style="margin:0; width:auto; border-radius:10px; background:#4ade80; color:white; border:none; padding:6px 12px; font-weight:700;" 
+              onclick="customerCompleteOrder('${myOrder.id}')">
+              Done ✓
+            </button>
+          </div>
+        `;
+        container.style.display = 'block';
+      }
+
+      function customerCompleteOrder(orderId) {
+        if (!confirm('Sudah menerima pesanan ini?')) return;
+        completeOrder(orderId); // Reuse the existing completion logic
+        showToast('Terima kasih! Jangan lupa beri ulasan ya kak! ✨');
       }
       function closeQrModal() { closeModal('qrModal'); }
       function closePromoModal() { closeModal('promoModal'); }
@@ -3249,7 +3600,7 @@
           const order = orders.find(o => o.id == orderId || o.queueNum == orderId);
           
           if (order) {
-            if (order.status === 'Selesai') {
+            if (order.status === 'Completed') {
               showToast('Pesanan ini sudah selesai.');
               showOrderDetails(order.id);
             } else {
@@ -3370,7 +3721,7 @@
         const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
         const colors = ['#3498db', '#2ecc71', '#e67e22', '#9b59b6', '#f1c40f'];
         
-        container.innerHTML = feedbacks.slice(0, 6).map((f, i) => `
+        container.innerHTML = feedbacks.filter(f => f.isVisible !== false).slice(0, 6).map((f, i) => `
           <div class="testimonial-card">
             <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
               <div style="width:35px; height:35px; border-radius:50%; background:${colors[i % colors.length]}; color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">
@@ -3411,6 +3762,13 @@
         renderFeedbackList();
         renderFunFacts();
         initRatingStars();
+        
+        // Auto-refresh order tracker every 1 second for "real-time" experience
+        setInterval(renderOrderTracker, 1000);
+        // Sync across tabs if admin completes order in another window
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'smoothinOrders') renderOrderTracker();
+        });
       });
     </script>
     </div> <!-- End Content Area -->
@@ -3422,41 +3780,36 @@
           <div style="opacity: 0.5; font-size: 0.65rem; margin-top: 5px;">Healthy Drink for Better Mood</div>
         </div>
       </footer>
-      <!-- CHAT WIDGET MOVED INSIDE -->
-      <div class="chat-widget-container" id="chat-widget" style="display:block;">
+      
+      <!-- AI CHAT WINDOW (FLOATING OVERLAY) -->
+      <div class="chat-widget-container" id="chat-widget">
         <div class="chat-window" id="chat-window">
           <div class="chat-header">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 35px; height: 35px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">🤖</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 38px; height: 38px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">🤖</div>
                 <div>
-                  <h4 id="chat-title" style="margin:0; font-size: 1rem;">Luna - AI Assistant</h4>
-                  <div style="font-size: 0.65rem; opacity: 0.8;">Online · Siap Melayani</div>
+                  <h4 id="chat-title" style="margin:0; font-size: 0.95rem; font-weight: 800;">Luna Assistant</h4>
+                  <div style="font-size: 0.6rem; opacity: 0.9; display: flex; align-items: center; gap: 4px;">
+                    <span style="width: 6px; height: 6px; background: #4ade80; border-radius: 50%;"></span> Online
+                  </div>
                 </div>
+              </div>
+              <button onclick="toggleChatWindow()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
             </div>
           </div>
           <div class="chat-body" id="chat-messages"></div>
-          <div class="chat-footer">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Tanya sesuatu..." onkeypress="if(event.key==='Enter') sendChatMsg()">
-            <button class="chat-send" onclick="sendChatMsg()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="chat-footer" style="background: white; border-top: 1px solid #f1f5f9; padding: 12px 15px;">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Ask Luna anything..." onkeypress="if(event.key==='Enter') sendChatMsg()" style="background: #f8fafc; border-radius: 12px; padding: 12px 15px;">
+            <button class="chat-send" onclick="sendChatMsg()" style="width: 40px; height: 40px; border-radius: 12px; background: var(--primary-color);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
             </button>
           </div>
-        </div>
-        <div class="chat-btn" onclick="toggleChatWindow()">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 2v4"></path>
-            <path d="M12 18v4"></path>
-            <path d="M4.93 4.93l2.83 2.83"></path>
-            <path d="M16.24 16.24l2.83 2.83"></path>
-            <path d="M2 12h4"></path>
-            <path d="M18 12h4"></path>
-            <path d="M4.93 19.07l2.83-2.83"></path>
-            <path d="M16.24 7.76l2.83-2.83"></path>
-          </svg>
         </div>
       </div>
     </div>
