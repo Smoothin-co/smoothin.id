@@ -3267,12 +3267,68 @@
         { name: "Hilyeah", stars: 5, msg: "Enak, simpel, kenyang.", isVisible: true }
       ];
 
-      let menuDatabase = safeJSONParse('smoothinMenu', defaultMenu);
-      // Auto-update if old menu detected or items missing
-      if (menuDatabase.length < defaultMenu.length) {
-        menuDatabase = defaultMenu;
-        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
+      let menuDatabase = []; // Will be loaded from API
+
+      async function initMenuFromDB() {
+        try {
+          const response = await fetch('api.php?action=get_products');
+          const result = await response.json();
+          if (result.success && result.products.length > 0) {
+            menuDatabase = result.products;
+          } else {
+            // Seed DB with default menu if empty
+            await seedMenuToDB();
+          }
+          renderMenu();
+        } catch (err) {
+          console.error("Failed to load menu from DB:", err);
+          menuDatabase = defaultMenu; // Fallback
+          renderMenu();
+        }
       }
+
+      async function initFeedbackFromDB() {
+        try {
+          const response = await fetch('api.php?action=get_feedbacks');
+          const result = await response.json();
+          if (result.success && result.feedbacks.length > 0) {
+            feedbackDatabase = result.feedbacks;
+          }
+          renderTestimonials();
+          renderFeedbackList();
+          if (localStorage.getItem('smoothinAdminTab') === 'feedback') renderAdminFeedbackAdmin();
+        } catch (err) {
+          console.error("Gagal memuat ulasan:", err);
+        }
+      }
+
+      async function seedMenuToDB() {
+        for (const item of defaultMenu) {
+          await fetch('api.php?action=add_product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: item.name,
+              category: item.category,
+              priceRegular: item.priceRegular,
+              priceMedium: item.priceMedium,
+              kcalReg: item.kcalReg,
+              kcalMed: item.kcalMed,
+              description: item.desc,
+              composition: item.composition,
+              benefit: item.benefit,
+              customImg: item.customImg,
+              rating: item.rating
+            })
+          });
+        }
+        // Fetch again after seeding
+        const response = await fetch('api.php?action=get_products');
+        const result = await response.json();
+        if (result.success) menuDatabase = result.products;
+      }
+
+      initMenuFromDB();
       let promosDatabase = safeJSONParse('smoothinPromos', defaultPromos);
       let feedbackDatabase = safeJSONParse('smoothinFeedback', defaultFeedback);
 
@@ -3567,7 +3623,7 @@
         showModal('editMenuModal');
       }
 
-      function saveMenuEdit() {
+      async function saveMenuEdit() {
         if (editingMenuIndex === -1) return;
 
         const m = menuDatabase[editingMenuIndex];
@@ -3580,13 +3636,30 @@
         m.desc = document.getElementById('edit-menu-desc').value;
         m.customImg = document.getElementById('edit-menu-img').value;
 
-        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
-        showToast('Produk berhasil diperbarui!');
-        closeModal('editMenuModal');
-        renderMenu();
-
-        if (localStorage.getItem('smoothinAdminTab') === 'menu') {
-          renderAdminMenu();
+        try {
+          await fetch('api.php?action=add_product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: m.name,
+              category: m.category,
+              priceRegular: m.priceRegular,
+              priceMedium: m.priceMedium,
+              kcalReg: m.kcalReg || "150 kcal",
+              kcalMed: m.kcalMed || "220 kcal",
+              description: m.desc,
+              composition: m.composition,
+              benefit: m.benefit,
+              customImg: m.customImg,
+              rating: m.rating || "5.0"
+            })
+          });
+          showToast('Produk berhasil diperbarui!');
+          closeModal('editMenuModal');
+          initMenuFromDB(); 
+          if (localStorage.getItem('smoothinAdminTab') === 'menu') renderAdminMenu();
+        } catch (err) {
+          showToast('Gagal update produk ke database.', 'error');
         }
       }
 
@@ -3599,7 +3672,7 @@
         showModal('addMenuModal');
       }
 
-      function saveNewMenu() {
+      async function saveNewMenu() {
         const name = document.getElementById('add-menu-name').value.trim();
         const category = document.getElementById('add-menu-category').value;
         const priceReg = parseInt(document.getElementById('add-menu-price-reg').value) || 0;
@@ -3611,29 +3684,30 @@
 
         if (!name) return showToast('Nama produk harus diisi!', 'error');
 
-        const newProd = {
-          name: name,
-          category: category,
-          priceRegular: priceReg,
-          priceMedium: priceMed,
-          benefit: benefit,
-          composition: composition,
-          customImg: img,
-          desc: desc,
-          rating: "5.0", // New products start with 5.0
-          kcalReg: "150 kcal", // Defaults
-          kcalMed: "220 kcal"
-        };
-
-        menuDatabase.push(newProd);
-        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
-
-        showToast('Produk baru berhasil ditambahkan!');
-        closeModal('addMenuModal');
-        renderMenu();
-
-        if (localStorage.getItem('smoothinAdminTab') === 'menu') {
-          renderAdminMenu();
+        try {
+          await fetch('api.php?action=add_product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name,
+              category: category,
+              priceRegular: priceReg,
+              priceMedium: priceMed,
+              kcalReg: "150 kcal",
+              kcalMed: "220 kcal",
+              description: desc,
+              composition: composition,
+              benefit: benefit,
+              customImg: img,
+              rating: "5.0"
+            })
+          });
+          showToast('Produk baru berhasil ditambahkan!');
+          closeModal('addMenuModal');
+          initMenuFromDB();
+          if (localStorage.getItem('smoothinAdminTab') === 'menu') renderAdminMenu();
+        } catch (err) {
+          showToast('Gagal tambah produk ke database.', 'error');
         }
       }
 
@@ -3961,7 +4035,7 @@
         });
       }
 
-      function submitFeedback() {
+      async function submitFeedback() {
         const name = document.getElementById('feedbackName').value.trim();
         const msg = document.getElementById('feedbackMessage').value.trim();
 
@@ -3970,34 +4044,40 @@
           return;
         }
 
-        const newFeedback = {
-          name: name,
-          stars: selectedRating,
-          msg: msg,
-          isVisible: true,
-          time: new Date().toLocaleDateString()
-        };
-
-        feedbackDatabase.unshift(newFeedback);
-        localStorage.setItem('smoothinFeedback', JSON.stringify(feedbackDatabase));
-
-        showToast('Terima kasih ulasannya! ❤️');
-
-        // Reset form
-        document.getElementById('feedbackName').value = '';
-        document.getElementById('feedbackMessage').value = '';
-        selectedRating = 5;
-        updateStarDisplay();
-
-        renderTestimonials();
-        renderFeedbackList();
+        try {
+          const response = await fetch('api.php?action=add_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name,
+              stars: selectedRating,
+              msg: msg,
+              isVisible: true
+            })
+          });
+          const result = await response.json();
+          if (result.success) {
+            showToast('Terima kasih ulasannya! ❤️');
+            // Reset form
+            document.getElementById('feedbackName').value = '';
+            document.getElementById('feedbackMessage').value = '';
+            selectedRating = 5;
+            updateStarDisplay();
+            await initFeedbackFromDB();
+          } else {
+            showToast('Gagal mengirim ulasan.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal terhubung ke server.', 'error');
+        }
       }
 
       function renderFeedbackList() {
         const container = document.getElementById('feedbackList');
         if (!container) return;
 
-        const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
+        const feedbacks = feedbackDatabase.length > 0 ? feedbackDatabase : defaultFeedback;
         container.innerHTML = feedbacks.map(f => `
           <div class="feedback-item">
             <div class="name">${f.name}</div>
@@ -4502,14 +4582,22 @@
         `;
       }
 
-      function deleteMenuItem(index) {
-        if (!confirm(`Hapus menu "${menuDatabase[index].name}"?`)) return;
+      async function deleteMenuItem(index) {
+        const prodName = menuDatabase[index].name;
+        if (!confirm(`Hapus menu "${prodName}"?`)) return;
 
-        menuDatabase.splice(index, 1);
-        localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
-        showToast('Produk berhasil dihapus');
-        renderAdminMenu();
-        renderMenu();
+        try {
+          await fetch('api.php?action=delete_product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: prodName })
+          });
+          showToast('Produk berhasil dihapus');
+          initMenuFromDB();
+          if (localStorage.getItem('smoothinAdminTab') === 'menu') renderAdminMenu();
+        } catch (err) {
+          showToast('Gagal hapus produk dari database.', 'error');
+        }
       }
 
       function saveMenuPrice(index) {
@@ -4566,7 +4654,7 @@
 
       function renderAdminFeedbackAdmin() {
         const container = document.getElementById('admin-tab-container');
-        const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
+        const feedbacks = feedbackDatabase.length > 0 ? feedbackDatabase : defaultFeedback;
         container.innerHTML = `
           <div class="app-card">
             <h4 style="color:var(--primary-color); margin-bottom:15px;">Review Moderation</h4>
@@ -4575,7 +4663,7 @@
                 <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; position:relative; background:${f.isVisible === false ? '#f8fafc' : 'white'}; opacity:${f.isVisible === false ? '0.6' : '1'}">
                   <div style="font-weight:700; font-size:0.85rem;">${f.name} <span style="color:#fbbf24;">${'★'.repeat(f.stars)}</span></div>
                   <div style="font-size:0.8rem; color:#64748b;">"${f.msg}"</div>
-                  <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer; font-size:1.1rem;" onclick="toggleFeedbackVisibility(${i})" title="${f.isVisible === false ? 'Show' : 'Hide'}">
+                  <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer; font-size:1.1rem;" onclick="toggleFeedbackVisibility(${f.id || i}, ${f.isVisible === false ? 1 : 0})" title="${f.isVisible === false ? 'Show' : 'Hide'}">
                     ${f.isVisible === false ? '🙈' : '👁️'}
                   </button>
                   <div style="font-size:0.6rem; color:${f.isVisible === false ? '#ef4444' : '#22c55e'}; margin-top:4px; font-weight:700;">
@@ -4588,13 +4676,19 @@
         `;
       }
 
-      function toggleFeedbackVisibility(index) {
-        const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
-        feedbacks[index].isVisible = feedbacks[index].isVisible === false ? true : false;
-        localStorage.setItem('smoothinFeedback', JSON.stringify(feedbacks));
-        showToast(feedbacks[index].isVisible ? 'Review is now visible' : 'Review is now hidden');
-        renderAdminFeedbackAdmin();
-        renderTestimonials();
+      async function toggleFeedbackVisibility(id, newStatus) {
+        if (id === undefined) return;
+        try {
+          await fetch('api.php?action=toggle_feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, isVisible: newStatus })
+          });
+          showToast(newStatus ? 'Review is now visible' : 'Review is now hidden');
+          await initFeedbackFromDB();
+        } catch (err) {
+          showToast('Gagal update status ulasan.', 'error');
+        }
       }
 
       function renderAdminTheme() {
@@ -5038,7 +5132,7 @@
       function renderTestimonials() {
         const container = document.querySelector('.testimonial-grid');
         if (!container) return;
-        const feedbacks = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
+        const feedbacks = feedbackDatabase.length > 0 ? feedbackDatabase : defaultFeedback;
         const colors = ['#3498db', '#2ecc71', '#e67e22', '#9b59b6', '#f1c40f'];
 
         container.innerHTML = feedbacks.filter(f => f.isVisible !== false).slice(0, 6).map((f, i) => `
@@ -5077,10 +5171,9 @@
 
       document.addEventListener('DOMContentLoaded', () => {
         try {
-          renderMenu();
+          initMenuFromDB();
+          initFeedbackFromDB();
           updateAccountView();
-          renderTestimonials();
-          renderFeedbackList();
           renderFunFacts();
           initRatingStars();
 
