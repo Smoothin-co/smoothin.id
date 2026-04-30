@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -485,6 +485,7 @@
       align-items: center; 
       padding: 20px;
     }
+    #productModal { z-index: 5100; }
     .modal-content { 
       background: rgba(255, 255, 255, 0.9); 
       backdrop-filter: blur(12px);
@@ -1164,6 +1165,43 @@
     }
     .report-row:last-child { border-bottom: none; }
     .report-row span { color: #64748b; font-weight: 500; }
+
+    /* Health Info Section in Modal */
+    .health-info-box {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border-radius: 20px;
+      padding: 15px;
+      margin-top: 15px;
+      border: 1px solid #bae6fd;
+      position: relative;
+      overflow: hidden;
+    }
+    .health-info-box::before {
+      content: "ðŸ’¡";
+      position: absolute;
+      top: -10px;
+      right: -5px;
+      font-size: 3rem;
+      opacity: 0.1;
+      transform: rotate(15deg);
+    }
+    .health-info-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .health-info-text {
+      font-size: 0.8rem;
+      color: #0c4a6e;
+      line-height: 1.5;
+      font-weight: 500;
+    }
   </style>
 </head>
 
@@ -1278,33 +1316,33 @@
         </div>
         <div class="grid-menu">
           <div class="grid-item" onclick="showPage('shop')">
-            <div class="grid-icon">📋</div>
+            <div class="grid-icon">ðŸ“‹</div>
             <div class="grid-label">Menu</div>
           </div>
           <div class="grid-item" onclick="showPage('custom')">
-            <div class="grid-icon">🥤</div>
+            <div class="grid-icon">ðŸ¥¤</div>
             <div class="grid-label">Custom</div>
           </div>
           <div class="grid-item" onclick="showPage('discount')">
-            <div class="grid-icon">🎁</div>
+            <div class="grid-icon">ðŸŽ</div>
             <div class="grid-label">Promo</div>
           </div>
           <div class="grid-item" onclick="openRecomModal()">
-            <div class="grid-icon">💡</div>
+            <div class="grid-icon">ðŸ’¡</div>
             <div class="grid-label">Tips</div>
           </div>
           <div class="grid-item" onclick="openDeliveryApp('gofood')">
-            <div class="grid-icon">🥘</div>
+            <div class="grid-icon">ðŸ¥˜</div>
             <div class="grid-label">GoFood</div>
           </div>
           <div class="grid-item" onclick="openDeliveryApp('shopeefood')">
-            <div class="grid-icon">🍱</div>
+            <div class="grid-icon">ðŸ±</div>
             <div class="grid-label">ShopeeFood</div>
           </div>
         </div>
 
         <div class="fun-fact-section">
-          <h3 style="color:#1f6392; margin-bottom:15px; padding-left:10px;">💡 Healthy Fun Facts</h3>
+          <h3 style="color:#1f6392; margin-bottom:15px; padding-left:10px;">ðŸ’¡ Healthy Fun Facts</h3>
           <div class="fun-fact-scroll" id="fun-fact-container">
             <!-- Fun facts render here -->
           </div>
@@ -1315,7 +1353,7 @@
         </div>
 
         <div class="contact-section">
-          <h3 style="color:var(--primary-color); margin: 35px 0 15px; padding-left:10px; font-weight: 800;">📍 Hubungi Kami</h3>
+          <h3 style="color:var(--primary-color); margin: 35px 0 15px; padding-left:10px; font-weight: 800;">ðŸ“ Hubungi Kami</h3>
           <div class="contact-card">
             <div class="contact-item" onclick="window.open('https://instagram.com/smoothin.id', '_blank')">
               <div class="contact-icon">
@@ -1366,40 +1404,40 @@
         </div>
 
         <div class="about-desc">
-          <p>Founded with a passion for bringing healthier beverage options to life, Smoothin’ was born from a simple 
+          <p>Founded with a passion for bringing healthier beverage options to life, Smoothinâ€™ was born from a simple 
             observation: in a world full of drinks, very few truly understand what they nourish their bodies with. 
             While modern trends often focus solely on taste, we decided to bring something more meaningful to the table.</p>
-          <p>Smoothin’ is about more than just flavor; it's about the harmony between indulgence and wellness. We believe 
+          <p>Smoothinâ€™ is about more than just flavor; it's about the harmony between indulgence and wellness. We believe 
             that healthy living shouldn't be complicated. By carefully selecting natural fruits and ingredients, we 
             craft smoothies that are as delightful to sip as they are beneficial to your body.</p>
-          <p style="font-style: italic; color: #2c7ab1;">Every sip of Smoothin’ is a small contribution towards a 
+          <p style="font-style: italic; color: #2c7ab1;">Every sip of Smoothinâ€™ is a small contribution towards a 
             healthier you, a more sustainable environment, and the prosperity of our local farmers. Because we believe 
             great change begins with consistent, small steps.</p>
         </div>
 
         <p style="margin-top: 30px; font-weight: 500; color: #1f6392;">Through our journey, we discovered three core 
-          pillars that we uphold in every Smoothin’ recipe:</p>
+          pillars that we uphold in every Smoothinâ€™ recipe:</p>
 
         <div class="esensi-grid">
           <div class="esensi-card">
             <img src="gizi.png" class="esensi-img">
             <h3>Mendukung Literasi Gizi</h3>
             <p>Masih banyak masyarakat yang belum memahami kandungan gizi dalam makanan dan minuman sehari-hari. Melalui
-              informasi sederhana seperti vitamin, mineral, dan manfaat di setiap produk, Smoothin’ ingin membantu
+              informasi sederhana seperti vitamin, mineral, dan manfaat di setiap produk, Smoothinâ€™ ingin membantu
               meningkatkan kesadaran gizi secara perlahan dan mudah dipahami.</p>
           </div>
           <div class="esensi-card">
             <img src="green.png" class="esensi-img">
             <h3>Gerakan Go Green</h3>
             <p>Penggunaan plastik sekali pakai masih menjadi salah satu penyumbang limbah terbesar. Dengan program
-              diskon bagi pelanggan yang membawa tumbler sendiri, Smoothin’ mengajak perubahan kecil untuk mengurangi
+              diskon bagi pelanggan yang membawa tumbler sendiri, Smoothinâ€™ mengajak perubahan kecil untuk mengurangi
               sampah plastik dan mendukung gaya hidup ramah lingkungan.</p>
           </div>
           <div class="esensi-card">
             <img src="tani.png" class="esensi-img">
             <h3>Mendukung Petani Buah Lokal</h3>
             <p>Indonesia memiliki kekayaan buah-buahan yang melimpah dan bernutrisi tinggi. Dengan memanfaatkan buah
-              segar, Smoothin’ turut mendukung penggunaan bahan lokal sekaligus menghadirkan produk yang lebih alami dan
+              segar, Smoothinâ€™ turut mendukung penggunaan bahan lokal sekaligus menghadirkan produk yang lebih alami dan
               berkualitas.</p>
           </div>
         </div>
@@ -1507,11 +1545,11 @@
             </div>
             <input type="text" id="feedbackName" class="feedback-name" placeholder="Nama kamu">
             <div class="rating-stars" id="ratingStars">
-              <span class="star" data-value="1">★</span>
-              <span class="star" data-value="2">★</span>
-              <span class="star" data-value="3">★</span>
-              <span class="star" data-value="4">★</span>
-              <span class="star" data-value="5">★</span>
+              <span class="star" data-value="1">â˜…</span>
+              <span class="star" data-value="2">â˜…</span>
+              <span class="star" data-value="3">â˜…</span>
+              <span class="star" data-value="4">â˜…</span>
+              <span class="star" data-value="5">â˜…</span>
             </div>
             <textarea id="feedbackMessage" class="feedback-input" rows="3"
               placeholder="Tulis ulasan atau saran kamu..."></textarea>
@@ -1523,17 +1561,17 @@
             <div id="feedbackList" class="feedback-list">
               <div class="feedback-item">
                 <div class="name">Neiimup</div>
-                <div class="stars">★★★★★</div>
+                <div class="stars">â˜…â˜…â˜…â˜…â˜…</div>
                 <div>smoothin enak bangett!! varian dragonana favoritku!</div>
               </div>
               <div class="feedback-item">
                 <div class="name">Peteuyyunyu</div>
-                <div class="stars">★★★★★</div>
+                <div class="stars">â˜…â˜…â˜…â˜…â˜…</div>
                 <div>WAJIB BELI SIH NI SMOOTHIE ENAK BGTTT, appleluna fav!</div>
               </div>
               <div class="feedback-item">
                 <div class="name">Hilyeah</div>
-                <div class="stars">★★★★★</div>
+                <div class="stars">â˜…â˜…â˜…â˜…â˜…</div>
                 <div>enak, simple, ngenyangin, 11/10</div>
               </div>
             </div>
@@ -1552,28 +1590,28 @@
             <h3>Lokasi</h3>
             <p>Jalan Dusun Ciragem RT 010 RW 008<br>Kel. Ciampanan, Kec. Cineam<br>Tasikmalaya, Jawa Barat</p>
             <a href="https://maps.google.com/?q=Ciampanan+Cineam+Tasikmalaya" target="_blank" class="contact-link">Buka
-              di Google Maps →</a>
+              di Google Maps â†’</a>
           </div>
           <div class="card">
             <h3>WhatsApp</h3>
             <p>+62 812-3456-7890</p>
             <a href="https://wa.me/6281234567890?text=Halo%20Smoothin%2C%20saya%20mau%20order%20minuman%20sehat"
-              target="_blank" class="contact-link">Chat via WhatsApp →</a>
+              target="_blank" class="contact-link">Chat via WhatsApp â†’</a>
           </div>
           <div class="card">
             <h3>Instagram</h3>
             <p>@smoothin.id</p>
-            <a href="https://instagram.com/smoothin.id" target="_blank" class="contact-link">Follow Instagram →</a>
+            <a href="https://instagram.com/smoothin.id" target="_blank" class="contact-link">Follow Instagram â†’</a>
           </div>
           <div class="card">
             <h3>GoFood</h3>
             <p>Pesan via GoFood</p>
-            <a href="javascript:void(0)" onclick="openDeliveryApp('gofood')" class="contact-link">Buka di GoFood →</a>
+            <a href="javascript:void(0)" onclick="openDeliveryApp('gofood')" class="contact-link">Buka di GoFood â†’</a>
           </div>
           <div class="card">
             <h3>ShopeeFood</h3>
             <p>Pesan via ShopeeFood</p>
-            <a href="javascript:void(0)" onclick="openDeliveryApp('shopeefood')" class="contact-link">Buka di ShopeeFood →</a>
+            <a href="javascript:void(0)" onclick="openDeliveryApp('shopeefood')" class="contact-link">Buka di ShopeeFood â†’</a>
           </div>
         </div>
       </div>
@@ -1703,36 +1741,36 @@
               
               <div class="admin-menu-grid" style="display:grid; gap:10px; margin-top:15px;">
                 <div class="admin-bar-item" onclick="switchAdminTab('orders')">
-                  <span>📦 Manage Orders</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸ“¦ Manage Orders</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('reports')">
-                  <span>📊 Sales Analytics</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸ“Š Sales Analytics</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('menu')">
-                  <span>🍎 Product Management</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸŽ Product Management</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('promos')">
-                  <span>🎟️ Promo & Coupons</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸŽŸï¸ Promo & Coupons</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('qris')">
-                  <span>💳 QRIS Account Setup</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸ’³ QRIS Account Setup</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('feedback')">
-                  <span>💬 Review Moderation</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸ’¬ Review Moderation</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('users')">
-                  <span>👥 Customer Database</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸ‘¥ Customer Database</span>
+                  <span class="chevron">â¯</span>
                 </div>
                 <div class="admin-bar-item" onclick="switchAdminTab('theme')">
-                  <span>🎨 Visual Customization</span>
-                  <span class="chevron">❯</span>
+                  <span>ðŸŽ¨ Visual Customization</span>
+                  <span class="chevron">â¯</span>
                 </div>
               </div>
             </div>
@@ -1825,12 +1863,12 @@
           <select id="recomSelect"
             style="width:100%; max-width:100%; border-radius:12px; padding:12px; font-size:1rem; border:1px solid #b9d4ef;">
             <option value="">-- Pilih Kebutuhan --</option>
-            <option value="KAMU LAGI DIET?">Diet & Jaga Berat Badan</option>
-            <option value="BOOST YOUR ENERGY!">Tambah Energi</option>
-            <option value="AYO JAGA IMUN">Tingkatkan Imunitas</option>
-            <option value="JAGA PENCERNAAN">Melancarkan Pencernaan</option>
-            <option value="SUPPORT YOUR BLOOD">Dukung Kesehatan Darah</option>
-            <option value="LEMAH & LETIH? SAATNYA SMOOTHIE">Pemulihan</option>
+            <option value="BODY GOALS">Diet & Jaga Berat Badan</option>
+            <option value="ENERGY BOOST">Tambah Energi</option>
+            <option value="IMMUNE SHIELD">Tingkatkan Imunitas</option>
+            <option value="DIGESTIVE BLISS">Melancarkan Pencernaan</option>
+            <option value="BLOOD HEALTH">Dukung Kesehatan Darah</option>
+            <option value="RECOVERY MODE">Pemulihan</option>
           </select>
         </div>
 
@@ -2165,8 +2203,8 @@
                 </div>
                 <div class="product-price">Rp${m.priceRegular.toLocaleString()}</div>
                 <div class="product-meta">
-                  <span>🔥 ${m.kcalReg}</span>
-                  <span>⭐ ${m.rating || '4.9'}</span>
+                  <span>ðŸ”¥ ${m.kcalReg}</span>
+                  <span>â­ ${m.rating || '4.9'}</span>
                 </div>
                 <button class="btn-buy-app">${btnText}</button>
               </div>
@@ -2182,7 +2220,7 @@
         if (cart.length === 0) {
           container.innerHTML = `
             <div class="card" style="text-align:center; padding:40px;">
-              <div style="font-size:3rem; margin-bottom:15px;">🛒</div>
+              <div style="font-size:3rem; margin-bottom:15px;">ðŸ›’</div>
               <h3>Keranjang Kosong</h3>
               <p>Yuk, pilih menu sehat favoritmu sekarang!</p>
               <button class="btn" onclick="showPage('shop')">Mulai Belanja</button>
@@ -2199,7 +2237,7 @@
             <div class="app-card" style="display:flex; align-items:center; gap:15px; margin-bottom:12px; padding:15px;">
               <div style="flex:1;">
                 <h4 style="margin:0; font-size:0.95rem;">${item.name}</h4>
-                <div style="font-size:0.8rem; color:#64748b;">${item.size || 'Regular'} · Qty: ${item.qty}</div>
+                <div style="font-size:0.8rem; color:#64748b;">${item.size || 'Regular'} Â· Qty: ${item.qty}</div>
                 <strong style="color:var(--primary-color); display:block; margin-top:4px;">Rp${itemPrice.toLocaleString()}</strong>
               </div>
               <button onclick="removeFromCart(${index})" style="background:#fee2e2; color:#ef4444; border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;">
@@ -2469,10 +2507,21 @@
         const detailEl = document.getElementById('modalDetail');
         detailEl.innerHTML = `
           <div style="margin-bottom:15px;">
-            <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:10px;">${currentItem.desc || ''}</p>
+            <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:12px;">${currentItem.desc || ''}</p>
+            
+            <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+              <p style="font-size: 0.75rem; color: #1e40af; font-weight: 800; margin-bottom: 4px;">ðŸŽ¯ Kenapa Direkomendasikan?</p>
+              <p style="font-size: 0.75rem; color: #1e3a8a; line-height: 1.4;">${currentItem.why || 'Sangat cocok untuk mendukung gaya hidup sehatmu.'}</p>
+            </div>
+
+            <div style="background: #fdf2f8; border-left: 4px solid #ec4899; padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+              <p style="font-size: 0.75rem; color: #be185d; font-weight: 800; margin-bottom: 4px;">ðŸ’¡ Smoothin' Fun Fact:</p>
+              <p style="font-size: 0.75rem; color: #9d174d; line-height: 1.4;">${currentItem.funfact || 'Smoothie ini sangat baik untuk kesehatanmu!'}</p>
+            </div>
+
             <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              <span style="background:#f0f9ff; color:#0369a1; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">✨ ${currentItem.benefit}</span>
-              <span style="background:#f1f5f9; color:#475569; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">🍎 ${currentItem.composition}</span>
+              <span style="background:#f0f9ff; color:#0369a1; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">âœ¨ ${currentItem.benefit}</span>
+              <span style="background:#f1f5f9; color:#475569; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">ðŸŽ ${currentItem.composition}</span>
             </div>
           </div>
         `;
@@ -2519,7 +2568,7 @@
           loginSuccess({ user: 'Admin', role: 'admin' });
         } else if (found) {
           loginSuccess(found);
-          showToast(`Selamat datang, ${u}! 👋`);
+          showToast(`Selamat datang, ${u}! ðŸ‘‹`);
         } else {
           showToast('Username atau password salah.', 'error');
         }
@@ -2572,7 +2621,7 @@
         }
         
         if (isCustom && selectedFruits.length === 0) {
-          showToast('Pilih minimal 1 buah dulu ya kak! 🥤', 'error');
+          showToast('Pilih minimal 1 buah dulu ya kak! ðŸ¥¤', 'error');
           return;
         }
 
@@ -2668,7 +2717,7 @@
               localStorage.setItem('smoothinUsers', JSON.stringify(users));
             }
             localStorage.setItem('smoothinUser', JSON.stringify(currentUser));
-            showToast('Poin member bertambah +10! 💎');
+            showToast('Poin member bertambah +10! ðŸ’Ž');
           }
           
           refreshAdminView();
@@ -2772,7 +2821,7 @@
         feedbackDatabase.unshift(newFeedback);
         localStorage.setItem('smoothinFeedback', JSON.stringify(feedbackDatabase));
         
-        showToast('Terima kasih ulasannya! ❤️');
+        showToast('Terima kasih ulasannya! â¤ï¸');
         
         // Reset form
         document.getElementById('feedbackName').value = '';
@@ -2792,7 +2841,7 @@
         container.innerHTML = feedbacks.map(f => `
           <div class="feedback-item">
             <div class="name">${f.name}</div>
-            <div class="stars">${'★'.repeat(f.stars)}${'☆'.repeat(5-f.stars)}</div>
+            <div class="stars">${'â˜…'.repeat(f.stars)}${'â˜†'.repeat(5-f.stars)}</div>
             <div>${f.msg}</div>
           </div>
         `).join('');
@@ -2802,7 +2851,7 @@
         const resultDiv = document.getElementById('recomResult');
         
         if (!category) {
-          resultDiv.innerHTML = '<p style="text-align:center; color:#e74c3c; font-weight:600; padding: 20px;">Pilih kebutuhan tubuhmu dulu ya kak! 😊</p>';
+          resultDiv.innerHTML = '<p style="text-align:center; color:#e74c3c; font-weight:600; padding: 20px;">Pilih kebutuhan tubuhmu dulu ya kak! ðŸ˜Š</p>';
           return;
         }
         
@@ -2825,14 +2874,22 @@
           }
           
           resultDiv.innerHTML = recommended.map(m => `
-            <div class="menu-card" style="margin-bottom:0; animation: fadeSlide 0.3s ease forwards;" onclick="openModal('${m.name.replace(/'/g, "\\'")}')">
-              <img src="${getProductImage(m.name)}" class="product-img" alt="${m.name}" onerror="this.src='https://placehold.co/100x100?text=Smoothin'">
-              <div class="menu-info">
-                <div class="menu-name">${m.name}</div>
-                <div class="menu-price">Rp${m.priceRegular.toLocaleString()}</div>
-                <div class="badge-kcal">${m.kcalReg}</div>
-                <button class="buy-btn-sm" style="margin-top:8px; width:auto; display:block;">Lihat Detail</button>
+            <div class="menu-card" style="margin-bottom:0; animation: fadeSlide 0.3s ease forwards; padding:15px;" onclick="openModal('${m.name.replace(/'/g, "\\'")}')">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <img src="${getProductImage(m.name)}" class="product-img" alt="${m.name}" style="width:70px; height:70px; border-radius:12px;" onerror="this.src='https://placehold.co/100x100?text=Smoothin'">
+                <div class="menu-info" style="flex:1;">
+                  <div class="menu-name" style="font-size:0.9rem; font-weight:800;">${m.name}</div>
+                  <div class="menu-price" style="font-size:0.8rem; color:var(--primary-color);">Rp${m.priceRegular.toLocaleString()}</div>
+                </div>
               </div>
+              <div style="margin-top:12px; background:#eff6ff; padding:10px; border-radius:10px; border:1px solid #dbeafe;">
+                <p style="font-size:0.7rem; color:#1e40af; font-weight:800; margin-bottom:2px;">ðŸŽ¯ Kenapa Ini Cocok Untukmu?</p>
+                <p style="font-size:0.65rem; color:#1e3a8a; line-height:1.4;">${m.why || 'Menu ini sangat pas untuk kebutuhan tubuhmu saat ini.'}</p>
+              </div>
+              <div style="font-size: 0.65rem; color: #5a7c9e; font-style: italic; margin-top: 8px; line-height: 1.3;">
+                ðŸ’¡ Fun Fact: ${m.funfact || 'Smoothie sehat untuk harimu!'}
+              </div>
+              <button class="buy-btn-sm" style="margin-top:10px; width:100%; border-radius:10px;">Lihat Detail & Pesan</button>
             </div>
           `).join('');
         }, 600);
@@ -2880,7 +2937,7 @@
           selectedFruits.splice(idx, 1);
         } else {
           if (selectedFruits.length >= FRUIT_LIMIT) {
-            showToast('Maksimal 3 buah saja ya kak! 😊');
+            showToast('Maksimal 3 buah saja ya kak! ðŸ˜Š');
             return;
           }
           selectedFruits.push(fruit);
@@ -2905,8 +2962,8 @@
       }
 
       function getFruitEmoji(f) {
-        const map = { 'Pisang':'🍌','Mangga':'🥭','Strawberry':'🍓','Apel':'🍎','Buah Naga':'🐉','Alpukat':'🥑','Melon':'🍈','Nanas':'🍍' };
-        return map[f] || '🍎';
+        const map = { 'Pisang':'ðŸŒ','Mangga':'ðŸ¥­','Strawberry':'ðŸ“','Apel':'ðŸŽ','Buah Naga':'ðŸ‰','Alpukat':'ðŸ¥‘','Melon':'ðŸˆ','Nanas':'ðŸ' };
+        return map[f] || 'ðŸŽ';
       }
 
       function initCustomPage() {
@@ -2915,7 +2972,7 @@
 
       function confirmCustomDirectOrder() {
         if (selectedFruits.length === 0) {
-          showToast('Pilih minimal 1 buah dulu ya kak! 🥤');
+          showToast('Pilih minimal 1 buah dulu ya kak! ðŸ¥¤');
           return;
         }
         const summary = `Custom: ${selectedFruits.join(' + ')} (${selectedBase})`;
@@ -2937,7 +2994,7 @@
           </div>
           
           <div class="loyalty-card" style="margin-bottom: 35px; background: linear-gradient(135deg, #1f6392, #3282b8); position: relative; overflow: hidden;">
-            <div style="position: absolute; right: -20px; top: -20px; font-size: 5rem; opacity: 0.1;">💎</div>
+            <div style="position: absolute; right: -20px; top: -20px; font-size: 5rem; opacity: 0.1;">ðŸ’Ž</div>
             <div style="position: relative; z-index: 1;">
               <div style="font-size: 0.85rem; opacity: 0.9; font-weight: 600; letter-spacing: 1px;">MY POINTS</div>
               <div class="points-val" style="margin: 5px 0;">${points} <span style="font-size: 1rem; opacity: 0.8;">PTS</span></div>
@@ -2955,7 +3012,7 @@
 
           <div class="promo-grid" style="gap: 15px;">
             ${Object.values(promos).map((p, i) => {
-              const icons = ['🔥', '🌿', '♻️'];
+              const icons = ['ðŸ”¥', 'ðŸŒ¿', 'â™»ï¸'];
               const pTitle = p.title.replace(/'/g, "\\'");
               const pDesc = p.desc.replace(/'/g, "\\'");
               const pCode = p.code.replace(/'/g, "\\'");
@@ -2983,7 +3040,7 @@
           </div>
           
           <div style="margin-top: 40px; background: #f0f7fe; border-radius: 20px; padding: 20px; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 10px;">💡</div>
+            <div style="font-size: 1.5rem; margin-bottom: 10px;">ðŸ’¡</div>
             <h4 style="color: var(--primary-color); margin-bottom: 8px;">Tips Hemat</h4>
             <p style="font-size: 0.75rem; color: #5a7c9e; line-height: 1.5;">Gunakan botol reusable untuk diskon langsung di setiap pembelian! Yuk dukung gerakan ramah lingkungan.</p>
           </div>
@@ -3166,7 +3223,7 @@
 
         container.innerHTML = `
           <div class="app-card">
-            <h4 style="color:var(--primary-color); margin-bottom:15px;">📊 Grafik Penjualan (7 Hari Terakhir)</h4>
+            <h4 style="color:var(--primary-color); margin-bottom:15px;">ðŸ“Š Grafik Penjualan (7 Hari Terakhir)</h4>
             <div style="height:220px; margin-bottom:25px; background:white; border-radius:15px; padding:10px;">
               <canvas id="salesChart"></canvas>
             </div>
@@ -3262,8 +3319,8 @@
                     </div>
                   </div>
                   <div style="display:flex; gap:6px;">
-                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center;" onclick="quickEditMenu('${m.name.replace(/'/g, "\\'")}')">✏️</button>
-                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:#fee2e2; color:#ef4444; border:1px solid #fecaca; display:flex; align-items:center; justify-content:center;" onclick="deleteMenuItem(${i})">🗑️</button>
+                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center;" onclick="quickEditMenu('${m.name.replace(/'/g, "\\'")}')">âœï¸</button>
+                    <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:#fee2e2; color:#ef4444; border:1px solid #fecaca; display:flex; align-items:center; justify-content:center;" onclick="deleteMenuItem(${i})">ðŸ—‘ï¸</button>
                   </div>
                 </div>
               `).join('')}
@@ -3344,10 +3401,10 @@
             <div style="display:grid; gap:10px;">
               ${feedbacks.map((f, i) => `
                 <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; position:relative; background:${f.isVisible === false ? '#f8fafc' : 'white'}; opacity:${f.isVisible === false ? '0.6' : '1'}">
-                  <div style="font-weight:700; font-size:0.85rem;">${f.name} <span style="color:#fbbf24;">${'★'.repeat(f.stars)}</span></div>
+                  <div style="font-weight:700; font-size:0.85rem;">${f.name} <span style="color:#fbbf24;">${'â˜…'.repeat(f.stars)}</span></div>
                   <div style="font-size:0.8rem; color:#64748b;">"${f.msg}"</div>
                   <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer; font-size:1.1rem;" onclick="toggleFeedbackVisibility(${i})" title="${f.isVisible === false ? 'Show' : 'Hide'}">
-                    ${f.isVisible === false ? '🙈' : '👁️'}
+                    ${f.isVisible === false ? 'ðŸ™ˆ' : 'ðŸ‘ï¸'}
                   </button>
                   <div style="font-size:0.6rem; color:${f.isVisible === false ? '#ef4444' : '#22c55e'}; margin-top:4px; font-weight:700;">
                     ${f.isVisible === false ? 'Hidden from public' : 'Visible to public'}
@@ -3469,7 +3526,7 @@
           container.innerHTML = `
             <div class="app-card">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h4 style="color:var(--primary-color);">📦 Live Orders</h4>
+                <h4 style="color:var(--primary-color);">ðŸ“¦ Live Orders</h4>
                 <button class="btn-logout" style="font-size:0.65rem; padding:4px 10px; width:auto; height:auto; background:#fee2e2;" onclick="clearAllOrders()">Clear All</button>
               </div>
               <div id="admin-orders-inner-list" style="display:grid; gap:10px;">
@@ -3585,7 +3642,7 @@
           }
           ordersList[idx].status = 'Completed';
           localStorage.setItem('smoothinOrders', JSON.stringify(ordersList));
-          showToast('Order Completed! ✅');
+          showToast('Order Completed! âœ…');
           
           refreshAdminView();
           renderOrderTracker();
@@ -3623,12 +3680,12 @@
           <div class="order-tracker-bar">
             <div class="tracker-pulse"></div>
             <div class="tracker-text">
-              Order #${myOrder.id.slice(-4)} — Waiting Confirmation
+              Order #${myOrder.id.slice(-4)} â€” Waiting Confirmation
               <div class="tracker-sub">Estimasi pesanan selesai: 5-10 Menit</div>
             </div>
             <button class="buy-btn-sm" style="margin:0; width:auto; border-radius:10px; background:#4ade80; color:white; border:none; padding:6px 12px; font-weight:700;" 
               onclick="customerCompleteOrder('${myOrder.id}')">
-              Done ✓
+              Done âœ“
             </button>
           </div>
         `;
@@ -3638,7 +3695,7 @@
       function customerCompleteOrder(orderId) {
         if (!confirm('Sudah menerima pesanan ini?')) return;
         completeOrder(orderId); // Reuse the existing completion logic
-        showToast('Terima kasih! Jangan lupa beri ulasan ya kak! ✨');
+        showToast('Terima kasih! Jangan lupa beri ulasan ya kak! âœ¨');
       }
       function closeQrModal() { closeModal('qrModal'); }
       function closePromoModal() { closeModal('promoModal'); }
@@ -3725,7 +3782,7 @@
           const typingEl = document.getElementById('luna-typing');
           if (typingEl) typingEl.remove();
 
-          let botText = "Halo kak! Luna di sini 👩‍🍳. Ada yang bisa Luna bantu buat nemuin smoothie yang pas buat mood kakak hari ini?";
+          let botText = "Halo kak! Luna di sini ðŸ‘©â€ðŸ³. Ada yang bisa Luna bantu buat nemuin smoothie yang pas buat mood kakak hari ini?";
           const lowText = text.toLowerCase();
           
           // Check for confirmation if there was a suggestion
@@ -3739,23 +3796,23 @@
               cart.push(item);
               localStorage.setItem('smoothinCart', JSON.stringify(cart));
               updateCartBadge();
-              botText = `Siap kak! **${prodName}** sudah Luna masukin ke keranjang ya. Ada lagi yang mau ditambah? 😊`;
+              botText = `Siap kak! **${prodName}** sudah Luna masukin ke keranjang ya. Ada lagi yang mau ditambah? ðŸ˜Š`;
               lastSuggestedProduct = null; // Clear suggestion
-              showToast(`${prodName} masuk keranjang! 🛒`);
+              showToast(`${prodName} masuk keranjang! ðŸ›’`);
             }
           } else if (lowText.includes('diet') || lowText.includes('kurus') || lowText.includes('berat')) {
             lastSuggestedProduct = "Berry Yogurt Lite";
-            botText = "Wah, semangat buat dietnya kak! 💪 Luna saranin pilih **Berry Yogurt Lite**. Kalorinya cuma 130 kcal lho, bikin kenyang tapi tetep ringan di perut. Mau Luna masukin ke keranjang?";
+            botText = "Wah, semangat buat dietnya kak! ðŸ’ª Luna saranin pilih **Berry Yogurt Lite**. Kalorinya cuma 130 kcal lho, bikin kenyang tapi tetep ringan di perut. Mau Luna masukin ke keranjang?";
           } else if (lowText.includes('energi') || lowText.includes('capek') || lowText.includes('lemas')) {
             lastSuggestedProduct = "Banana Milk Boost";
-            botText = "Lagi butuh asupan energi ya? ⚡ Kakak harus coba **Banana Milk Boost**! Kandungan kalium dari pisangnya ampuh banget buat balikin stamina seketika. Siap buat lanjut aktivitas lagi?";
+            botText = "Lagi butuh asupan energi ya? âš¡ Kakak harus coba **Banana Milk Boost**! Kandungan kalium dari pisangnya ampuh banget buat balikin stamina seketika. Siap buat lanjut aktivitas lagi?";
           } else if (lowText.includes('rekomendasi') || lowText.includes('saran') || lowText.includes('pilih')) {
             lastSuggestedProduct = "Mango Yogurt Boost";
             botText = "Hmm, Luna liat kakak cocok banget nyobain **Mango Yogurt Boost**. Rasanya seger, manis alami, dan bagus banget buat imun tubuh. Gimana, mau coba?";
           } else if (lowText.includes('harga') || lowText.includes('murah') || lowText.includes('mahal')) {
-            botText = "Tenang kak, sehat nggak harus mahal! Di Smoothin, harga mulai dari **Rp15.000** aja. Plus, kakak bisa dapet diskon ekstra kalau bawa tumbler sendiri lho! Menarik kan? 😉";
+            botText = "Tenang kak, sehat nggak harus mahal! Di Smoothin, harga mulai dari **Rp15.000** aja. Plus, kakak bisa dapet diskon ekstra kalau bawa tumbler sendiri lho! Menarik kan? ðŸ˜‰";
           } else if (lowText.includes('halo') || lowText.includes('hi') || lowText.includes('pagi') || lowText.includes('siang') || lowText.includes('malam')) {
-            botText = "Halo kak! Senang deh bisa ngobrol sama kakak 😊. Luna siap bantu cariin smoothie yang paling seger buat nemenin hari kakak. Ada target kesehatan tertentu yang lagi kakak kejar?";
+            botText = "Halo kak! Senang deh bisa ngobrol sama kakak ðŸ˜Š. Luna siap bantu cariin smoothie yang paling seger buat nemenin hari kakak. Ada target kesehatan tertentu yang lagi kakak kejar?";
           } else if (lowText.includes('makasih') || lowText.includes('thanks') || lowText.includes('oke')) {
             botText = "Sama-sama kak! Seneng bisa bantu. Jangan lupa jaga kesehatan ya! Ada lagi yang Luna bisa bantu sebelum kakak lanjut order?";
           }
@@ -3802,7 +3859,7 @@
               </div>
               <div>
                 <strong style="color:var(--primary-color); font-size:0.85rem; display:block;">${f.name}</strong>
-                <div style="color:#fbbf24; font-size:0.6rem;">${'★'.repeat(f.stars)}</div>
+                <div style="color:#fbbf24; font-size:0.6rem;">${'â˜…'.repeat(f.stars)}</div>
               </div>
             </div>
             <p style="font-size:0.85rem; line-height:1.4; color:#5a7c9e; font-style:italic;">"${f.msg}"</p>
@@ -3814,10 +3871,10 @@
         const container = document.getElementById('fun-fact-container');
         if (!container) return;
         const facts = [
-          { icon: '🍌', title: 'Pisang', text: 'Mengandung kalium tinggi yang bagus untuk kesehatan jantung dan energi otot.' },
-          { icon: '🥭', title: 'Mangga', text: 'Kaya akan vitamin C dan A yang memperkuat sistem imun serta kesehatan mata.' },
-          { icon: '🍓', title: 'Strawberry', text: 'Antioksidan tinggi yang membantu menangkal radikal bebas dan menyehatkan kulit.' },
-          { icon: '🍎', title: 'Apel', text: 'Serat alaminya sangat baik untuk melancarkan pencernaan dan menjaga berat badan.' }
+          { icon: 'ðŸŒ', title: 'Pisang', text: 'Mengandung kalium tinggi yang bagus untuk kesehatan jantung dan energi otot.' },
+          { icon: 'ðŸ¥­', title: 'Mangga', text: 'Kaya akan vitamin C dan A yang memperkuat sistem imun serta kesehatan mata.' },
+          { icon: 'ðŸ“', title: 'Strawberry', text: 'Antioksidan tinggi yang membantu menangkal radikal bebas dan menyehatkan kulit.' },
+          { icon: 'ðŸŽ', title: 'Apel', text: 'Serat alaminya sangat baik untuk melancarkan pencernaan dan menjaga berat badan.' }
         ];
         container.innerHTML = facts.map(f => `
           <div class="fun-fact-card">
@@ -3865,7 +3922,7 @@
           <div class="chat-header">
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
               <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 38px; height: 38px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">🤖</div>
+                <div style="width: 38px; height: 38px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">ðŸ¤–</div>
                 <div>
                   <h4 id="chat-title" style="margin:0; font-size: 0.95rem; font-weight: 800;">Luna Assistant</h4>
                   <div style="font-size: 0.6rem; opacity: 0.9; display: flex; align-items: center; gap: 4px;">
