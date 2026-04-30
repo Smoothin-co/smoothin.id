@@ -2493,35 +2493,65 @@
         }
       }
 
-      function handleRegister() {
+      async function handleRegister() {
         const u = document.getElementById('reg-user').value.trim();
         const p = document.getElementById('reg-pass').value.trim();
         if (!u || !p) return showToast('Isi data dulu ya!', 'error');
         
-        const allUsers = JSON.parse(localStorage.getItem('smoothinUsers')) || [];
-        if (allUsers.find(x => x.user === u)) return showToast('Username sudah dipakai.', 'error');
-        
-        const newUser = { user: u, pass: p, role: 'customer', points: 0 };
-        allUsers.push(newUser);
-        localStorage.setItem('smoothinUsers', JSON.stringify(allUsers));
-        showToast('Pendaftaran Berhasil! Silakan Login.');
-        toggleAuth('login');
+        try {
+          const response = await fetch('api.php?action=register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p })
+          });
+          const result = await response.json();
+          
+          if (result.success) {
+            showToast(result.message);
+            toggleAuth('login');
+          } else {
+            showToast(result.message, 'error');
+          }
+        } catch (error) {
+          console.error('Registration Fetch Error:', error);
+          showToast('Gagal terhubung ke server. Pastikan Apache & MySQL di XAMPP sudah RUNNING.', 'error');
+        }
       }
 
-      function handleLogin() {
+      async function handleLogin() {
         const u = document.getElementById('login-user').value.trim();
         const p = document.getElementById('login-pass').value.trim();
         
-        const allUsers = JSON.parse(localStorage.getItem('smoothinUsers')) || [];
-        const found = allUsers.find(x => x.user === u && x.pass === p);
-        
         if (u === 'admin' && p === 'admin') {
-          loginSuccess({ user: 'Admin', role: 'admin' });
-        } else if (found) {
-          loginSuccess(found);
-          showToast(`Selamat datang, ${u}! 👋`);
-        } else {
-          showToast('Username atau password salah.', 'error');
+          loginSuccess({ username: 'Admin', role: 'admin' });
+          showToast('Welcome Admin! 👋');
+          return;
+        }
+
+        try {
+          const response = await fetch('api.php?action=login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p })
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Login Server Error:', errorText);
+            throw new Error('Server returned ' + response.status);
+          }
+
+          const result = await response.json();
+          
+          if (result.success) {
+            loginSuccess(result.user);
+            showToast(`Selamat datang, ${u}! 👋`);
+          } else {
+            showToast(result.message, 'error');
+          }
+        } catch (error) {
+          console.error('Login Fetch Error:', error);
+          showToast('Gagal terhubung ke server. Periksa koneksi database.', 'error');
         }
       }
 
@@ -2542,7 +2572,7 @@
         if (currentUser) {
           document.getElementById('auth-view').style.display = 'none';
           document.getElementById('user-view').style.display = 'block';
-          document.getElementById('user-title').innerText = currentUser.user;
+          document.getElementById('user-title').innerText = currentUser.username || currentUser.user;
           const isAdmin = currentUser.role === 'admin';
           document.getElementById('admin-panel').style.display = isAdmin ? 'block' : 'none';
           document.getElementById('customer-panel').style.display = isAdmin ? 'none' : 'block';
@@ -2562,6 +2592,19 @@
           document.getElementById('user-view').style.display = 'none';
         }
         renderOrderTracker();
+      }
+
+      async function syncUserPoints() {
+        if (!currentUser || currentUser.role === 'admin') return;
+        try {
+          await fetch('api.php?action=update_points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: currentUser.username, points: currentUser.points })
+          });
+        } catch (e) {
+          console.error('Failed to sync points:', e);
+        }
       }
 
       function handleDirectOrder(isCustom, isVerified = false) {
@@ -2660,14 +2703,9 @@
           
           // Add Points if Member (Logged In)
           if (currentUser) {
-            currentUser.points = (currentUser.points || 0) + 10;
-            const users = JSON.parse(localStorage.getItem('smoothinUsers')) || [];
-            const uIdx = users.findIndex(u => u.user === currentUser.user);
-            if (uIdx !== -1) {
-              users[uIdx].points = currentUser.points;
-              localStorage.setItem('smoothinUsers', JSON.stringify(users));
-            }
+            currentUser.points = (parseInt(currentUser.points) || 0) + 10;
             localStorage.setItem('smoothinUser', JSON.stringify(currentUser));
+            syncUserPoints();
             showToast('Poin member bertambah +10! 💎');
           }
           
@@ -3050,6 +3088,7 @@
         if (currentUser.points < cost) return;
         currentUser.points -= cost;
         localStorage.setItem('smoothinUser', JSON.stringify(currentUser));
+        syncUserPoints();
         showToast(`Berhasil menukar ${cost} poin!`);
         openPromoModalDetail(`Hadiah: ${name}`, `Gunakan kode ini di kasir.`, code);
         renderDiscountPage();
@@ -3101,32 +3140,40 @@
         else if (tab === 'theme') renderAdminTheme();
       }
 
-      function renderAdminUsers() {
+      async function renderAdminUsers() {
         const container = document.getElementById('admin-tab-container');
-        const users = JSON.parse(localStorage.getItem('smoothinUsers')) || [];
         
-        container.innerHTML = `
-          <div class="app-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-              <h4 style="color:var(--primary-color);">Data Pelanggan</h4>
-              <span style="font-size:0.75rem; background:var(--secondary-color); color:var(--primary-color); padding:4px 10px; border-radius:10px; font-weight:700;">${users.length} Total</span>
-            </div>
-            <div style="display:grid; gap:10px;">
-              ${users.map(u => `
-                <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
-                  <div>
-                    <div style="font-weight:800; font-size:0.9rem;">${u.user}</div>
-                    <div style="font-size:0.7rem; color:#64748b;">Role: ${u.role || 'customer'}</div>
+        try {
+          const response = await fetch('api.php?action=get_users');
+          const result = await response.json();
+          const users = result.users || [];
+          
+          container.innerHTML = `
+            <div class="app-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h4 style="color:var(--primary-color);">Data Pelanggan (Database)</h4>
+                <span style="font-size:0.75rem; background:var(--secondary-color); color:var(--primary-color); padding:4px 10px; border-radius:10px; font-weight:700;">${users.length} Total</span>
+              </div>
+              <div style="display:grid; gap:10px;">
+                ${users.map(u => `
+                  <div style="padding:12px; border:1px solid #f1f5f9; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      <div style="font-weight:800; font-size:0.9rem;">${u.username}</div>
+                      <div style="font-size:0.7rem; color:#64748b;">Role: ${u.role || 'customer'}</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-size:0.8rem; font-weight:700; color:var(--accent-color);">${u.points || 0} PTS</div>
+                    </div>
                   </div>
-                  <div style="text-align:right;">
-                    <div style="font-size:0.8rem; font-weight:700; color:var(--accent-color);">${u.points || 0} PTS</div>
-                  </div>
-                </div>
-              `).join('')}
+                `).join('')}
+              </div>
+              ${users.length === 0 ? '<div style="text-align:center; padding:20px; color:#94a3b8;">Belum ada pelanggan terdaftar di database.</div>' : ''}
             </div>
-            ${users.length === 0 ? '<div style="text-align:center; padding:20px; color:#94a3b8;">Belum ada pelanggan terdaftar.</div>' : ''}
-          </div>
-        `;
+          `;
+        } catch (error) {
+          console.error('Error fetching users:', error);
+          container.innerHTML = '<div class="app-card">Gagal memuat data pelanggan.</div>';
+        }
       }
 
       function renderAdminReports() {
