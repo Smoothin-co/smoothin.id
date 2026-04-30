@@ -1989,7 +1989,6 @@
           <label>URL Gambar (Optional)</label>
           <input type="text" id="add-menu-img" class="form-input" placeholder="fotoygbnr/nama-file.png">
         </div>
-        </div>
         <button class="btn" onclick="saveNewMenu()">Tambah Produk</button>
       </div>
     </div>
@@ -2007,12 +2006,23 @@
 
     <script>
       // --- THEME & DATA INITIALIZATION ---
-      const DELIVERY_LINKS = {
-        gofood: "https://gofood.link/a/wA4eYV8", // Link toko Smoothin di GoFood (contoh)
-        shopeefood: "https://shopee.co.id/universal-links/m/shopeefood" // Link umum ShopeeFood
-      };
+      let html5QrCode = null;
 
-      const APP_VERSION = '1.7.0'; // Higher version to force clean sync
+      function safeJSONParse(key, fallback) {
+        try {
+          const val = localStorage.getItem(key);
+          if (!val || val === 'undefined') return fallback;
+          return JSON.parse(val) || fallback;
+        } catch (e) {
+          console.error('Error parsing ' + key, e);
+          return fallback;
+        }
+      }
+
+      const DELIVERY_LINKS = {
+        gofood: "#",
+        shopeefood: "#"
+      };
       const defaultMenu = [
         { name: "Berry Yogurt Lite", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "130 kcal", kcalMed: "180 kcal", desc: "Low-calorie blend with fresh strawberries & yogurt.", composition: "Strawberry, Yogurt, Honey", benefit: "Diet & Digestion", customImg: "fotoygbnr/berryyogurthlite.png", rating: "4.8" },
         { name: "Apple Oat Fit", category: "BODY GOALS", priceRegular: 15000, priceMedium: 23000, kcalReg: "180 kcal", kcalMed: "240 kcal", desc: "Fiber-rich apple & oat fusion.", composition: "Apple, Oat, Milk", benefit: "Stay Full Longer", customImg: "fotoygbnr/appleoatfit.png", rating: "4.7" },
@@ -2049,18 +2059,18 @@
         { name: "Hilyeah", stars: 5, msg: "Enak, simpel, kenyang.", isVisible: true }
       ];
 
-      let menuDatabase = JSON.parse(localStorage.getItem('smoothinMenu')) || defaultMenu;
+      let menuDatabase = safeJSONParse('smoothinMenu', defaultMenu);
       // Auto-update if old menu detected or items missing
       if (menuDatabase.length < defaultMenu.length) {
         menuDatabase = defaultMenu;
         localStorage.setItem('smoothinMenu', JSON.stringify(menuDatabase));
       }
-      let promosDatabase = JSON.parse(localStorage.getItem('smoothinPromos')) || defaultPromos;
-      let feedbackDatabase = JSON.parse(localStorage.getItem('smoothinFeedback')) || defaultFeedback;
+      let promosDatabase = safeJSONParse('smoothinPromos', defaultPromos);
+      let feedbackDatabase = safeJSONParse('smoothinFeedback', defaultFeedback);
 
-      let currentUser = JSON.parse(localStorage.getItem('smoothinUser')) || null;
-      let cart = JSON.parse(localStorage.getItem('smoothinCart')) || [];
-      let orders = JSON.parse(localStorage.getItem('smoothinOrders')) || [];
+      let currentUser = safeJSONParse('smoothinUser', null);
+      let cart = safeJSONParse('smoothinCart', []);
+      let orders = safeJSONParse('smoothinOrders', []);
       let currentItem = null;
       let isChatOpen = false;
       let adminSelectedUser = null;
@@ -2315,9 +2325,7 @@
         closeModal();
       }
 
-      function closeModal(id) {
-        document.getElementById(id || 'productModal').style.display = 'none';
-      }
+
 
       function showModal(id) {
         document.getElementById(id).style.display = 'flex';
@@ -2421,38 +2429,36 @@
         }
       }
 
-      }
-
       function openModal(name) {
         currentItem = menuDatabase.find(m => m.name === name);
-        if (!currentItem) {
-          showToast('Produk tidak ditemukan.', 'error');
-          return;
-        }
-        
-        document.getElementById('modalTitle').innerText = currentItem.name || 'Smoothie';
+        document.getElementById('modalTitle').innerText = currentItem.name;
         document.getElementById('modalImage').src = getProductImage(currentItem.name);
         
         const detailEl = document.getElementById('modalDetail');
-        if (detailEl) {
-          detailEl.innerHTML = `
-            <div style="margin-bottom:15px;">
-              <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:10px;">${currentItem.desc || 'Nikmati kesegaran smoothie sehat dari Smoothin untuk mood yang lebih baik.'}</p>
-              <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                <span style="background:#f0f9ff; color:#0369a1; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">✨ ${currentItem.benefit || 'Sehat & Segar'}</span>
-                <span style="background:#f1f5f9; color:#475569; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">🍎 ${currentItem.composition || 'Bahan Alami'}</span>
-              </div>
+        detailEl.innerHTML = `
+          <div style="margin-bottom:15px;">
+            <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:10px;">${currentItem.desc || ''}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="background:#f0f9ff; color:#0369a1; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">✨ ${currentItem.benefit}</span>
+              <span style="background:#f1f5f9; color:#475569; font-size:0.65rem; padding:4px 10px; border-radius:20px; font-weight:700;">🍎 ${currentItem.composition}</span>
             </div>
-          `;
-        }
+          </div>
+        `;
         
         showModal('productModal');
       }
 
       function closeModal(id) {
-        if (!id) id = 'productModal'; 
-        const modal = document.getElementById(id);
-        if (modal) modal.style.display = 'none';
+        const modalId = id || 'productModal';
+        const el = document.getElementById(modalId);
+        if (el) el.style.display = 'none';
+        
+        // Special handle for scanner
+        if (modalId === 'scannerModal' && typeof html5QrCode !== 'undefined') {
+          try {
+            html5QrCode.stop().catch(err => {});
+          } catch (e) {}
+        }
       }
 
       function handleRegister() {
@@ -2658,7 +2664,7 @@
       }
 
       function startScanner(isCustom = false) {
-        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode = new Html5Qrcode("qr-reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
           html5QrCode.stop().then(() => {
             closeScannerModal();
@@ -3222,7 +3228,6 @@
                       <span style="font-size:0.65rem; color:#64748b;">Reg: <strong>Rp${m.priceRegular.toLocaleString()}</strong></span>
                       <span style="font-size:0.65rem; color:#64748b;">Med: <strong>Rp${m.priceMedium.toLocaleString()}</strong></span>
                     </div>
-                    <div style="font-size: 0.6rem; color: #94a3b8; margin-top: 4px; font-style: italic;">${m.desc || 'Tanpa deskripsi'}</div>
                   </div>
                   <div style="display:flex; gap:6px;">
                     <button class="buy-btn-sm" style="margin:0; width:35px; height:35px; padding:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center;" onclick="quickEditMenu('${m.name.replace(/'/g, "\\'")}')">✏️</button>
@@ -3612,7 +3617,7 @@
       }
 
       function startAdminScanner() {
-        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode = new Html5Qrcode("qr-reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
           html5QrCode.stop().then(() => {
             closeModal('scannerModal');
@@ -3792,51 +3797,24 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // 1. Version Check & Migration (Force Reset)
-        const savedVersion = localStorage.getItem('smoothinAppVersion');
-        if (savedVersion !== APP_VERSION) {
-          localStorage.removeItem('smoothinMenu'); 
-          localStorage.setItem('smoothinAppVersion', APP_VERSION);
-          menuDatabase = defaultMenu;
-          localStorage.setItem('smoothinMenu', JSON.stringify(defaultMenu));
+        try {
+          renderMenu();
+          updateAccountView();
+          renderTestimonials();
+          renderFeedbackList();
+          renderFunFacts();
+          initRatingStars();
+          
+          updateCartBadge();
+          renderOrderTracker();
+          setInterval(renderOrderTracker, 1000);
+          
+          window.addEventListener('storage', (e) => {
+            if (e.key === 'smoothinOrders') renderOrderTracker();
+          });
+        } catch (err) {
+          console.error("App Initialization Error:", err);
         }
-
-        // 2. Data Recovery: Ensure ALL items have their specific descriptions from default
-        const currentMenu = JSON.parse(localStorage.getItem('smoothinMenu')) || defaultMenu;
-        let updated = false;
-        currentMenu.forEach(item => {
-          const def = defaultMenu.find(d => d.name === item.name);
-          if (def) {
-            if (!item.desc && def.desc) { item.desc = def.desc; updated = true; }
-            if (!item.composition && def.composition) { item.composition = def.composition; updated = true; }
-            if (!item.benefit && def.benefit) { item.benefit = def.benefit; updated = true; }
-          }
-        });
-        if (updated) {
-          localStorage.setItem('smoothinMenu', JSON.stringify(currentMenu));
-          menuDatabase = currentMenu;
-        } else {
-          menuDatabase = currentMenu;
-        }
-
-        // 3. Initial Rendering
-        renderMenu();
-        updateAccountView();
-        renderTestimonials();
-        renderFeedbackList();
-        renderFunFacts();
-        initRatingStars();
-        
-        // Auto-refresh order tracker every 1 second for "real-time" experience
-        setInterval(renderOrderTracker, 1000);
-        // Sync across tabs if admin completes order in another window
-        window.addEventListener('storage', (e) => {
-          if (e.key === 'smoothinOrders') renderOrderTracker();
-          if (e.key === 'smoothinMenu') {
-            menuDatabase = JSON.parse(localStorage.getItem('smoothinMenu')) || defaultMenu;
-            renderMenu();
-          }
-        });
       });
     </script>
     </div> <!-- End Content Area -->
@@ -3877,7 +3855,6 @@
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
             </button>
-          </div>
         </div>
       </div>
     </div>
